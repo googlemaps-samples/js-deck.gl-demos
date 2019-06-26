@@ -1,0 +1,25 @@
+{
+  "name": "pure-js-google-maps",
+  "version": "0.0.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "prestart": "npm run bundle",
+    "bundle": "webpack --config webpack.config.js",
+    "start-dev": "webpack-dev-server --progress --hot --open"
+  },
+  "dependencies": {
+    "@deck.gl/core": "^7.0.0-beta",
+    "@deck.gl/geo-layers": "^7.0.10",
+    "@deck.gl/google-maps": "^7.0.0-beta",
+    "@deck.gl/layers": "^7.0.0-beta",
+    "@google/maps": "^0.5.5",
+    "express": "^4.17.1",
+    "webpack": "^4.20.2"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.1"
+  }
+}
