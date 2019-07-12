@@ -16,7 +16,7 @@
  
 import {MAP_STYLES} from '../map_styles';
 import {GoogleMapsOverlay} from '@deck.gl/google-maps';
-import {GeoJsonLayer, ScatterplotLayer} from '@deck.gl/layers';
+import {ScatterplotLayer} from '@deck.gl/layers';
 
 // source: NYC Open Data https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/pi5s-9p35
 const TREES =

@@ -16,7 +16,6 @@
  
 import {MAP_STYLES} from '../map_styles';
 import {GoogleMapsOverlay} from '@deck.gl/google-maps';
-import {GeoJsonLayer, ScatterplotLayer} from '@deck.gl/layers';
 import {TripsLayer} from '@deck.gl/geo-layers';
 
 let map;

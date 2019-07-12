@@ -16,7 +16,7 @@
 
 import {MAP_STYLES} from '../map_styles';
 import {GoogleMapsOverlay} from '@deck.gl/google-maps';
-import {GeoJsonLayer, ArcLayer} from '@deck.gl/layers';
+import {ArcLayer} from '@deck.gl/layers';
 
 // source: Chicago Data Portal https://data.cityofchicago.org/Transportation/Taxi-Trips/wrvz-psew
 const TAXI_RIDES =
