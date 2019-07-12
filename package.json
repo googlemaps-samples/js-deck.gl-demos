@@ -1,8 +1,21 @@
 {
-  "name": "deck.gl-arclayer-demo",
+  "name": "google-maps-deck.gl-demos",
   "version": "0.1.0",
+  "description": "Examples of using Deck.gl as an overlay on the Google Maps JS API base map",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amuramoto/deck.gl-demos.git"
+  },
+  "author": "amuramoto",
   "license": "Apache-2.0",
-  "type": "module",
+  "bugs": {
+    "url": "https://github.com/amuramoto/deck.gl-demos/issues"
+  },
+  "homepage": "https://github.com/amuramoto/deck.gl-demos#readme",
   "scripts": {
     "start": "node server.js",
     "prestart": "npm run bundle",
