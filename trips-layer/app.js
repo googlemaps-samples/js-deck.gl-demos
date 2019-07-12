@@ -24,8 +24,8 @@ let overlay;
 let trips;
 
 // Set your Google Maps API key here or via environment variable
-const GOOGLE_MAPS_API_KEY = process.env.GoogleMapsAPIKey; // eslint-disable-line
-const GOOGLE_MAPS_API_URL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
+const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_PLATFORM_API_KEY; // eslint-disable-line
+const GOOGLE_MAPS_API_URL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_PLATFORM_API_KEY}&libraries=places`;
 const MAP_CENTER = {lat: 40.757870, lng: -73.985625};
 
 

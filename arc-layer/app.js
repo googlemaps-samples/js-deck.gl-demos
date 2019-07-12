@@ -23,8 +23,8 @@ const TAXI_RIDES =
   'https://data.cityofchicago.org/resource/wrvz-psew.json?$limit=25000';
 
 // Set your Google Maps API key here or via environment variable
-const GOOGLE_MAPS_API_KEY = process.env.GoogleMapsAPIKey; // eslint-disable-line
-const GOOGLE_MAPS_API_URL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}`;
+const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_PLATFORM_API_KEY; // eslint-disable-line
+const GOOGLE_MAPS_API_URL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_PLATFORM_API_KEY}`;
 
 function loadScript(url) {
   const script = document.createElement('script');
