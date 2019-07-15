@@ -22,17 +22,18 @@ class GoogleMapWithDeckGL {
 
   constructor(api_key) {
     // Set your Google Maps API key here or via environment variable
-    this.api_key = api_key || process.env.GOOGLE_MAPS_API_KEY;
-    this.overlay = this.initMapWithOverlay();
+    this.map;
+    this.overlay = this.initMapWithOverlay(api_key);
   }
 
   // Load the Google Maps Platform JS API
   loadScript() {
-    const GOOGLE_MAPS_API_URL = `https://maps.googleapis.com/maps/api/js?key=${this.api_key}`;
+    const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+    const GOOGLE_MAPS_API_URL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}`;
+    const head = document.querySelector('head');
     const script = document.createElement('script');
     script.type = 'text/javascript';
-    script.src = GOOGLE_MAPS_API_URL;
-    const head = document.querySelector('head');
+    script.src = GOOGLE_MAPS_API_URL;    
     head.appendChild(script);
     return new Promise(resolve => {
       script.onload = resolve;
@@ -42,16 +43,15 @@ class GoogleMapWithDeckGL {
   // Init the base map with Deck.gl overlay
   async initMapWithOverlay() {
     await this.loadScript();
-    const map = new google.maps.Map(document.getElementById('map'), {
+    const overlay = new GoogleMapsOverlay();
+    this.map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 40.760306, lng: -73.982302},
       zoom: 15,
       styles: MAP_STYLES
-    });
-    const overlay = new GoogleMapsOverlay();
-    overlay.setMap(map);
+    });    
+    overlay.setMap(this.map);
     return overlay;
    }
-  
 }
 
 let test = new GoogleMapWithDeckGL();
