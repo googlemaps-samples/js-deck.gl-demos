@@ -20,7 +20,8 @@ const CONFIG = {
   mode: 'development',
 
   entry: {
-  	app: './src/app.js'
+  	app: './src/app.js',
+    index: './src/index.js'
   },
 
   devServer: {
