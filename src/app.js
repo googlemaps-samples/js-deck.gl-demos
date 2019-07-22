@@ -16,12 +16,12 @@
  
 import {MAP_STYLES} from './map_styles';
 import {GoogleMapsOverlay} from '@deck.gl/google-maps';
-import {EXAMPLE_LAYERS} from './layers';
-import {ArcLayer} from '@deck.gl/layers';
+
 export class GoogleMapWithDeckGL {
 
   constructor() {
-    // Set your Google Maps API key here or via environment variable
+    // Set your Google Maps API key here or via environment variable    
+    this.api;
     this.map;
     this.overlay;
   }
@@ -29,7 +29,7 @@ export class GoogleMapWithDeckGL {
   // Load the Google Maps Platform JS API
   loadScript() {
     const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
-    const GOOGLE_MAPS_API_URL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}`;
+    const GOOGLE_MAPS_API_URL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
     const head = document.querySelector('head');
     const script = document.createElement('script');
     script.type = 'text/javascript';
@@ -43,18 +43,9 @@ export class GoogleMapWithDeckGL {
   // Init the base map with Deck.gl overlay
   async initMapWithOverlay(options) {
     await this.loadScript();
-    this.overlay = new GoogleMapsOverlay({layers: [
-      new ArcLayer({
-        id: 'arcs',
-        data: 'https://data.cityofchicago.org/resource/wrvz-psew.json?$limit=25000',
-        getSourcePosition: f => [f.pickup_centroid_longitude, f.pickup_centroid_latitude],
-        getTargetPosition: f => [f.dropoff_centroid_longitude, f.dropoff_centroid_latitude],
-        getSourceColor: [0, 128, 200],
-        getTargetColor: [255, 101, 101],
-        getWidth: 0.5
-      })
-    ]});    
-    this.map = new google.maps.Map(document.getElementById('map'), {
+    this.api = google.maps;
+    this.overlay = new GoogleMapsOverlay();    
+    this.map = new this.api.Map(document.getElementById('map'), {
       center: options.center,
       zoom: options.zoom,
       styles: MAP_STYLES

@@ -20,7 +20,7 @@ import {ScatterplotLayer} from '@deck.gl/layers';
 const TREES =
   'https://data.cityofnewyork.us/resource/5rq2-4hqu.json?$limit=65000&&boroname=Manhattan';
 
-const METERS = 'https://data.cityofnewyork.us/resource/92q3-8jse.json?$limit=15000';
+const METERS = 'https://data.cityofnewyork.us/resource/ykbm-ptyi.json?$limit=15000';
 
 export class ScatterplotLayerExample {
   constructor() {}
@@ -64,7 +64,8 @@ export class ScatterplotLayerExample {
   }
   static getMetadata() {
     return {
-      name: 'Arc Layer'
+      name: 'Scatterplot Layer',
+      thumbnail: 'scatterplot.png'
     }
   }
 }

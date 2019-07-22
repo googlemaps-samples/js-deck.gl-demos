@@ -22,19 +22,6 @@ const TAXI_RIDES =
 
 export class ArcLayerExample {
   constructor() {}
-static test(map) {
-  map.setProps({layers: [
-      new ArcLayer({
-        id: 'arcs',
-        data: 'https://data.cityofchicago.org/resource/wrvz-psew.json?$limit=25000',
-        getSourcePosition: f => [f.pickup_centroid_longitude, f.pickup_centroid_latitude],
-        getTargetPosition: f => [f.dropoff_centroid_longitude, f.dropoff_centroid_latitude],
-        getSourceColor: [0, 128, 200],
-        getTargetColor: [255, 101, 101],
-        getWidth: 0.5
-      })
-    ]})
-}
 	static getLayers() {
     return [
       new ArcLayer({
@@ -56,7 +43,8 @@ static test(map) {
   }
   static getMetadata() {
     return {
-      name: 'Arc Layer'
+      name: 'Arc Layer',
+      thumbnail: 'arc.png'
     }
   }
 }
