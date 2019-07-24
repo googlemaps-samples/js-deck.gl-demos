@@ -22,7 +22,6 @@ export class TripsLayerExample {
   constructor() {}
   static getLayers(google_map) {
     const builder = new TripsBuilder();
-    console.log(this.getMapOptions())
     const trips = builder.getTrips(google_map.api, this.getMapOptions());
     return [
       new TripsLayer({
@@ -58,6 +57,7 @@ class TripsBuilder {
   }
   
   getPlaces(api, map_options) {
+    console.log(google)
     const places_service = new api.places.PlacesService(map);
     const OPTIONS = {
       location: new google.maps.LatLng(map_options.center),
@@ -69,6 +69,7 @@ class TripsBuilder {
         if (status !== google.maps.places.PlacesServiceStatus.OK) {
           reject(status);
         }
+        console.log(res)
         resolve(res)
       });
     });
@@ -78,11 +79,13 @@ class TripsBuilder {
   async getTrips(api, map_options) {
     let places = await this.getPlaces(api, map_options);
     let trips = [];
-    for (let i = 0; i < places.length; i++) {
-      const START = places[i].geometry.location.lat() + ',' + places[i].geometry.location.lng();
+    for (let i = 0; i < places.length; i++) {      
+      const START = {place_id: places[i].place_id};
+      // const START = places[i].geometry.location.lat() + ',' + places[i].geometry.location.lng();
       for (let j = i+1; j < places.length; j++) {
-        const END = places[j].geometry.location.lat() + ',' + places[j].geometry.location.lng();      
-        const DIRECTIONS = this.getDirections(START, END);
+        const END = {place_id: places[j].place_id};
+        // const END = places[j].geometry.location.lat() + ',' + places[j].geometry.location.lng();      
+        const DIRECTIONS = this.getDirections(api, START, END);
         trips.push(DIRECTIONS);  
       }
     }
@@ -90,25 +93,35 @@ class TripsBuilder {
     return trips;
   }
 
-  async getDirections (start, end) {
-    const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+  async getDirections (api, start, end) {
+    // const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
     const OPTIONS = {
-      origin: start,
-      destination: end,
-      mode: 'driving'
+      origin: new api.LatLng(start[0], start[1]),
+      destination: new api.LatLng(end[0], end[1]),
+      travelMode: 'DRIVING'
     }
-    const request_url = `https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${end}&key=${GOOGLE_MAPS_API_KEY}`
-    const result = fetch(request_url, {mode: 'no-cors'});
-    result.then(()=>{}).catch(e=> console.log(e))
-    // result = await result.json();
+    // const request_url = `https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${end}&key=${GOOGLE_MAPS_API_KEY}`
+    // const result = await fetch(request_url, {mode: 'no-cors'});
 
-    result = result.routes[0].legs[0];
-    let segments = this.buildSegments(result.start_location, result.steps)
-    let directions = {
-      duration: result.duration.value,
-      segments: segments
-    }
-    return directions;
+    // // result.then((s)=>{console.log(s)}).catch(e=> console.log('catch'+e))
+    // result = await result.json();
+    // console.log(result)
+
+    // result = result.routes[0].legs[0];
+    let service = new api.DirectionsService();
+    let request = new Promise((resolve, reject) => {
+      service.route(OPTIONS, (res, status) => {
+        console.log(res)
+      })
+    })
+let t = await request;
+
+    // let segments = this.buildSegments(result.start_location, result.steps)
+    // let directions = {
+    //   duration: result.duration.value,
+    //   segments: segments
+    // }
+    // return directions;
   }
 
   buildSegments(start_coords, steps) {
