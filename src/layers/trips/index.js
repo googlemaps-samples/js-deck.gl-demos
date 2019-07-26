@@ -20,24 +20,27 @@ import * as GoogleMapsClient from '@google/maps';
 
 export class TripsLayerExample {
   constructor() {}
-  static getLayers(google_map) {
+  static *getLayers(google_map) {
     const builder = new TripsBuilder();
-    const trips = builder.getTrips(google_map.api, this.getMapOptions());
-    return [
-      new TripsLayer({
-        id: 'trips-layer',
-        data: trips,
-        getPath: d => d.segments,
-        getColor: [253, 128, 93],
-        opacity: 0.7,
-        widthMinPixels: 2,
-        rounded: true,
-        trailLength: 100,
-        currentTime: 0
-      })
-    ]
+    let trips = builder.getTrips(google_map, this.getMapOptions());
+    for (let i = 1; i <= 20; i++) {
+      yield [
+        new TripsLayer({
+          id: 'trips-layer',
+          data: trips,
+          getPath: d => console.log(d.paths),
+          getColor: [253, 128, 93],
+          opacity: 0.7,
+          widthMinPixels: 2,
+          rounded: true,
+          trailLength: 100,
+          currentTime: i
+        })
+      ]
+    }
+    return;
   }
-  static getMapOptions() {
+  static getMapOptions() {    
     return {
       center: {lat: 40.757870, lng: -73.985625},
       zoom: 16
@@ -53,101 +56,86 @@ export class TripsLayerExample {
 
 class TripsBuilder {
   constructor() {
-    
+    this.trips;
   }
   
-  getPlaces(api, map_options) {
-    console.log(google)
-    const places_service = new api.places.PlacesService(map);
-    const OPTIONS = {
-      location: new google.maps.LatLng(map_options.center),
-      radius: '1600',
-      type: ['restaurant']
+  async getTrips(google_map, map_options) {
+    let trips = {
+      duration: 0,
+      paths: []
     };
-    let places_request = new Promise((resolve, reject) => {
-      places_service.nearbySearch(OPTIONS, (res, status) => {
-        if (status !== google.maps.places.PlacesServiceStatus.OK) {
-          reject(status);
+    let places = await this.getPlaces(google_map.api, google_map.map, map_options.center);
+  
+    places = places.slice(0,3);
+         
+    places.forEach(async (place, index) => {
+      const START = place.place_id;
+      for (let j = index + 1; j < places.length; j++) {
+        const END = places[j].place_id;
+        const trip = await this.getDirections(google_map.api, START, END);
+        if (trip.duration > trips.duration) {
+          trips.duration = trip.duration;
         }
-        console.log(res)
-        resolve(res)
-      });
-    });
-    return places_request;
-  }
-
-  async getTrips(api, map_options) {
-    let places = await this.getPlaces(api, map_options);
-    let trips = [];
-    for (let i = 0; i < places.length; i++) {      
-      const START = {place_id: places[i].place_id};
-      // const START = places[i].geometry.location.lat() + ',' + places[i].geometry.location.lng();
-      for (let j = i+1; j < places.length; j++) {
-        const END = {place_id: places[j].place_id};
-        // const END = places[j].geometry.location.lat() + ',' + places[j].geometry.location.lng();      
-        const DIRECTIONS = this.getDirections(api, START, END);
-        trips.push(DIRECTIONS);  
+        trips.paths.push(trip);
       }
-    }
-    trips = await Promise.all(trips);
+    });
     return trips;
   }
 
-  async getDirections (api, start, end) {
-    // const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+  async getPlaces(api, map, center) {
+    const places_service = new api.places.PlacesService(map);
     const OPTIONS = {
-      origin: new api.LatLng(start[0], start[1]),
-      destination: new api.LatLng(end[0], end[1]),
+      location: new api.LatLng(center),
+      radius: '1600',
+      type: ['restaurant']
+    };
+    const places_request = new Promise((resolve, reject) => {
+      places_service.nearbySearch(OPTIONS, (res, status) => {
+        if (status === 'OK') {
+          resolve(res);
+        }
+        reject(status);        
+      });
+    });
+    const places = await places_request;    
+    return places;
+  }
+
+  async getDirections (api, start, end) {
+    const OPTIONS = {
+      origin: { placeId: start },
+      destination: { placeId: end },
       travelMode: 'DRIVING'
     }
-    // const request_url = `https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${end}&key=${GOOGLE_MAPS_API_KEY}`
-    // const result = await fetch(request_url, {mode: 'no-cors'});
-
-    // // result.then((s)=>{console.log(s)}).catch(e=> console.log('catch'+e))
-    // result = await result.json();
-    // console.log(result)
-
-    // result = result.routes[0].legs[0];
-    let service = new api.DirectionsService();
-    let request = new Promise((resolve, reject) => {
-      service.route(OPTIONS, (res, status) => {
-        console.log(res)
-      })
-    })
-let t = await request;
-
-    // let segments = this.buildSegments(result.start_location, result.steps)
-    // let directions = {
-    //   duration: result.duration.value,
-    //   segments: segments
-    // }
-    // return directions;
+    const directionsService = new api.DirectionsService();
+    let directions = new Promise((resolve, reject) => {
+      directionsService.route(OPTIONS, (response, status) => {
+        if (status === 'OK') {
+          let duration = response.routes[0].legs[0].duration.value;
+          let route = response.routes[0].legs[0].steps;
+          route = this.formatRoute(route);
+          resolve({route: route, duration: duration});
+        }
+        if (status === 'OVER_QUERY_LIMIT') {         
+          this.getRoute(directionsService, OPTIONS);
+        }        
+      });
+    });
+    directions = await directions;
+    return directions;
   }
 
-  buildSegments(start_coords, steps) {
-    segments = [];
+  formatRoute(route) {
     let timestamp = 0;
-    segments.push([start_coords.lng, start_coords.lat, timestamp]);
-    steps.forEach(step => {
-      timestamp += step.duration.value;
-      segments.push([step.end_location.lng, step.end_location.lat, timestamp]);    
-    });
-    return segments;
+    route = route.map(step => {
+      let formatted_step = [
+          step.start_location.lng(),
+          step.start_location.lat(),
+          timestamp
+      ]
+      timestamp += step.duration.value
+      return formatted_step;
+    });          
+    return route;
   }
 }
-
-// class tripRoutes {
-//   constructor() {}
-  
-
-  
-
-//   let current_time = 0;
-//   function render() {
-//     overlay.setProps({layers: });
-//     current_time += 1;  
-//     requestAnimationFrame(render)
-//   }
-
-  
-// }

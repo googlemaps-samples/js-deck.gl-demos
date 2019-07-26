@@ -50,11 +50,11 @@ export class GoogleMapWithDeckGL {
       zoom: options.zoom,
       styles: MAP_STYLES
     });    
-    
     this.overlay.setMap(this.map);    
   }
 
   setLayer(deckgl_layers) {
+    console.log(deckgl_layers)
     this.overlay.setProps({layers: deckgl_layers});
   }
 }

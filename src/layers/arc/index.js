@@ -18,12 +18,12 @@ import {ArcLayer} from '@deck.gl/layers';
 
 // source: Chicago Data Portal https://data.cityofchicago.org/Transportation/Taxi-Trips/wrvz-psew
 const TAXI_RIDES =
-  'https://data.cityofchicago.org/resource/wrvz-psew.json?$limit=25000';
+  'https://data.cityofchicago.org/resource/wrvz-psew.json?$limit=20000';
 
 export class ArcLayerExample {
   constructor() {}
-	static getLayers() {
-    return [
+	static *getLayers() {
+    yield [
       new ArcLayer({
         id: 'arcs',
         data: 'https://data.cityofchicago.org/resource/wrvz-psew.json?$limit=25000',

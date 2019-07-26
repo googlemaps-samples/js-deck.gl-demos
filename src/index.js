@@ -26,12 +26,17 @@ function buildMenu(google_map) {
 }
 
 function changeLayer(google_map, selected_layer) {
-  const layer = selected_layer.getLayers(google_map);
-  const map_options = selected_layer.getMapOptions();
-  console.log(google_map)
-  google_map.setLayer(layer);
+  let layers = selected_layer.getLayers(google_map);
+  let next = layers.next();
+  const map_options = selected_layer.getMapOptions();  
+  while (!next.done) {    
+    google_map.setLayer(next.value);  
+    next = layers.next();
+  };
   google_map.map.setCenter(map_options.center);
-  google_map.map.setZoom(map_options.zoom);
+  google_map.map.setZoom(map_options.zoom);    
+  
+  
 }
 
 async function run() {
