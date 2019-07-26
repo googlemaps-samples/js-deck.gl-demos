@@ -23,10 +23,10 @@ const TAXI_RIDES =
 export class ArcLayerExample {
   constructor() {}
 	static *getLayers() {
-    yield [
+    return [
       new ArcLayer({
         id: 'arcs',
-        data: 'https://data.cityofchicago.org/resource/wrvz-psew.json?$limit=25000',
+        data: 'https://data.cityofchicago.org/resource/wrvz-psew.json?$limit=25000&$where=pickup_centroid_latitude%20is%20not%20null%20AND%20dropoff_centroid_latitude%20is%20not%20null',
         getSourcePosition: f => [f.pickup_centroid_longitude, f.pickup_centroid_latitude],
         getTargetPosition: f => [f.dropoff_centroid_longitude, f.dropoff_centroid_latitude],
         getSourceColor: [0, 128, 200],

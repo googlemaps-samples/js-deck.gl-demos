@@ -23,12 +23,12 @@ export class TripsLayerExample {
   static *getLayers(google_map) {
     const builder = new TripsBuilder();
     let trips = builder.getTrips(google_map, this.getMapOptions());
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= 200; i++) {
       yield [
         new TripsLayer({
           id: 'trips-layer',
           data: trips,
-          getPath: d => console.log(d.paths),
+          getPath: function(d) {console.log(d.route)},
           getColor: [253, 128, 93],
           opacity: 0.7,
           widthMinPixels: 2,
@@ -36,10 +36,10 @@ export class TripsLayerExample {
           trailLength: 100,
           currentTime: i
         })
-      ]
-    }
-    return;
+      ]      
+    }    
   }
+
   static getMapOptions() {    
     return {
       center: {lat: 40.757870, lng: -73.985625},
@@ -55,15 +55,10 @@ export class TripsLayerExample {
 }
 
 class TripsBuilder {
-  constructor() {
-    this.trips;
-  }
+  constructor() {}
   
   async getTrips(google_map, map_options) {
-    let trips = {
-      duration: 0,
-      paths: []
-    };
+    let trips = [];
     let places = await this.getPlaces(google_map.api, google_map.map, map_options.center);
   
     places = places.slice(0,3);
@@ -73,10 +68,10 @@ class TripsBuilder {
       for (let j = index + 1; j < places.length; j++) {
         const END = places[j].place_id;
         const trip = await this.getDirections(google_map.api, START, END);
-        if (trip.duration > trips.duration) {
-          trips.duration = trip.duration;
-        }
-        trips.paths.push(trip);
+        // if (trip.duration > trips.duration) {
+        //   trips.duration = trip.duration;
+        // }
+        trips.push(trip);
       }
     });
     return trips;

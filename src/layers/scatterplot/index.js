@@ -25,7 +25,7 @@ const METERS = 'https://data.cityofnewyork.us/resource/ykbm-ptyi.json?$limit=150
 export class ScatterplotLayerExample {
   constructor() {}
   static *getLayers() {
-    yield [
+    return [
       new ScatterplotLayer({
         id: 'scatterplot-tree-layer',
         data: TREES,

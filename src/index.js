@@ -6,7 +6,7 @@ async function initMap() {
 	let map_options = selected_layer.getMapOptions();
 	let google_map = new GoogleMapWithDeckGL();
   await google_map.initMapWithOverlay(map_options);
-	changeLayer(google_map, selected_layer);  
+	changeExample(google_map, selected_layer);  
   return google_map;
 }
 
@@ -18,25 +18,35 @@ function buildMenu(google_map) {
     const thumbnail = document.createElement('img');
     thumbnail.src = './img/' + layer_metadata.thumbnail;
     button.onclick = function() {
-      changeLayer(google_map, layer)
+      changeExample(google_map, layer)
     };
     button.appendChild(thumbnail);
     menu_div.appendChild(button);
 	})		
 }
 
-function changeLayer(google_map, selected_layer) {
+function changeExample(google_map, selected_layer) {
   let layers = selected_layer.getLayers(google_map);
-  let next = layers.next();
   const map_options = selected_layer.getMapOptions();  
-  while (!next.done) {    
-    google_map.setLayer(next.value);  
-    next = layers.next();
-  };
+  setMap(google_map, map_options);
+  requestAnimationFrame(function() {
+    setLayer(google_map, layers);
+  })
+}
+
+function setLayer(google_map, layers) {
+  let next = layers.next();
+  if (next.value){
+  google_map.setLayer(next.value)
+  if (!next.done){
+    requestAnimationFrame(function() {setLayer(google_map, layers)});
+  }
+}
+}
+
+function setMap(google_map, map_options) {  
   google_map.map.setCenter(map_options.center);
   google_map.map.setZoom(map_options.zoom);    
-  
-  
 }
 
 async function run() {
