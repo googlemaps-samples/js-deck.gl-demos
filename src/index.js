@@ -37,7 +37,9 @@ function changeExample(google_map, selected_layer) {
 function setLayer(google_map, layers) {
   let next = layers.next();
   if (next.value){
+
   google_map.setLayer(next.value)
+
   if (!next.done){
     requestAnimationFrame(function() {setLayer(google_map, layers)});
   }

@@ -23,12 +23,12 @@ export class TripsLayerExample {
   static *getLayers(google_map) {
     const builder = new TripsBuilder();
     let trips = builder.getTrips(google_map, this.getMapOptions());
-    for (let i = 1; i <= 200; i++) {
+    for (let i = 1; i <= 300; i++) {
       yield [
         new TripsLayer({
           id: 'trips-layer',
           data: trips,
-          getPath: function(d) {console.log(d.route)},
+          getPath: d => d,
           getColor: [253, 128, 93],
           opacity: 0.7,
           widthMinPixels: 2,
@@ -61,19 +61,20 @@ class TripsBuilder {
     let trips = [];
     let places = await this.getPlaces(google_map.api, google_map.map, map_options.center);
   
-    places = places.slice(0,3);
+    places = places.slice(0,5);
          
     places.forEach(async (place, index) => {
       const START = place.place_id;
       for (let j = index + 1; j < places.length; j++) {
         const END = places[j].place_id;
-        const trip = await this.getDirections(google_map.api, START, END);
+        const trip = this.getDirections(google_map.api, START, END);
         // if (trip.duration > trips.duration) {
         //   trips.duration = trip.duration;
         // }
         trips.push(trip);
       }
     });
+    trips = await Promise.all(trips);
     return trips;
   }
 
@@ -109,14 +110,14 @@ class TripsBuilder {
           let duration = response.routes[0].legs[0].duration.value;
           let route = response.routes[0].legs[0].steps;
           route = this.formatRoute(route);
-          resolve({route: route, duration: duration});
+          resolve(route);
         }
         if (status === 'OVER_QUERY_LIMIT') {         
           this.getRoute(directionsService, OPTIONS);
         }        
       });
     });
-    directions = await directions;
+    // directions = await directions;
     return directions;
   }
 
