@@ -21,23 +21,35 @@ import * as GoogleMapsClient from '@google/maps';
 export class TripsLayerExample {
   constructor() {}
   static *getLayers(google_map) {
-    const builder = new TripsBuilder();
-    let trips = builder.getTrips(google_map, this.getMapOptions());
-    for (let i = 1; i <= 300; i++) {
-      yield [
-        new TripsLayer({
-          id: 'trips-layer',
-          data: trips,
-          getPath: d => d,
-          getColor: [253, 128, 93],
-          opacity: 0.7,
-          widthMinPixels: 2,
-          rounded: true,
-          trailLength: 100,
-          currentTime: i
-        })
-      ]      
-    }    
+    let layers = [];
+    const builder = new TripsBuilder(google_map);
+    let trips = builder.getTrips(this.getMapOptions());
+    let next = trips.next();
+    console.log(next)    
+    let current_time = 0;
+    while (!next.done) {        
+      let layer = new TripsLayer({
+        id: 'trips-layer',
+        data: next.value,
+        getPath: d => d,
+        getColor: [253, 128, 93],
+        opacity: 0.7,
+        widthMinPixels: 2,
+        rounded: true,
+        trailLength: 100,
+        currentTime: current_time
+      });
+      layers.push(layer);
+      current_time++;
+      next = trips.next();
+      yield []
+    }
+
+    // for (let i = 1; i <= 300; i++) {
+    //   yield [
+        
+    //   ]      
+    // }    
   }
 
   static getMapOptions() {    
@@ -55,57 +67,63 @@ export class TripsLayerExample {
 }
 
 class TripsBuilder {
-  constructor() {}
+  constructor(google_map) {    
+    this.map = google_map.map
+    this.maps_js_api = google_map.api;
+    this.places_service = new this.maps_js_api.places.PlacesService(google_map.map);
+    this.directions_service = new this.maps_js_api.DirectionsService();    
+  }
   
-  async getTrips(google_map, map_options) {
+  async *getTrips(map_options) {
     let trips = [];
-    let places = await this.getPlaces(google_map.api, google_map.map, map_options.center);
-  
-    places = places.slice(0,5);
-         
-    places.forEach(async (place, index) => {
-      const START = place.place_id;
-      for (let j = index + 1; j < places.length; j++) {
+    let places = await this.getPlaces(map_options.center);
+    places = places.slice(0,6);
+
+    for(let i = 0; i< places.length; i++) {
+      const START = places[i].place_id;
+      for (let j = i + 1; j < places.length; j++) {
         const END = places[j].place_id;
-        const trip = this.getDirections(google_map.api, START, END);
+        const trip = this.getDirections(START, END);
         // if (trip.duration > trips.duration) {
         //   trips.duration = trip.duration;
         // }
         trips.push(trip);
+        
+        if (trips.length === 10) {
+          trips = await Promise.all(trips);
+          yield trips;
+          trips = [];
+        }
       }
-    });
-    trips = await Promise.all(trips);
-    return trips;
+    };    
   }
 
-  async getPlaces(api, map, center) {
-    const places_service = new api.places.PlacesService(map);
+  async getPlaces(center) {    
     const OPTIONS = {
-      location: new api.LatLng(center),
+      location: new this.maps_js_api.LatLng(center),
       radius: '1600',
       type: ['restaurant']
     };
     const places_request = new Promise((resolve, reject) => {
-      places_service.nearbySearch(OPTIONS, (res, status) => {
+      this.places_service.nearbySearch(OPTIONS, (res, status) => {
         if (status === 'OK') {
           resolve(res);
         }
         reject(status);        
       });
     });
-    const places = await places_request;    
+    const places = await places_request;
     return places;
   }
 
-  async getDirections (api, start, end) {
+  async getDirections (start, end) {
     const OPTIONS = {
       origin: { placeId: start },
       destination: { placeId: end },
       travelMode: 'DRIVING'
-    }
-    const directionsService = new api.DirectionsService();
+    }    
     let directions = new Promise((resolve, reject) => {
-      directionsService.route(OPTIONS, (response, status) => {
+      this.directions_service.route(OPTIONS, (response, status) => {
         if (status === 'OK') {
           let duration = response.routes[0].legs[0].duration.value;
           let route = response.routes[0].legs[0].steps;
@@ -113,11 +131,11 @@ class TripsBuilder {
           resolve(route);
         }
         if (status === 'OVER_QUERY_LIMIT') {         
-          this.getRoute(directionsService, OPTIONS);
+          this.getDirections(start, end);
         }        
       });
     });
-    // directions = await directions;
+    directions = await directions;
     return directions;
   }
 
