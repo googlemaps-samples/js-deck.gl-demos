@@ -1,5 +1,5 @@
-import {GoogleMapWithDeckGL} from './app.js';
-import {layers} from './layers';
+import {GoogleMapWithDeckGL} from '../app.js';
+import {layers} from '../layers';
 
 async function initMap() {
 	let selected_layer = layers[0];
@@ -8,6 +8,12 @@ async function initMap() {
   await google_map.initMapWithOverlay(map_options);
 	changeExample(google_map, selected_layer);  
   return google_map;
+}
+
+// Reposition the map for selected demo
+function setMap(google_map, map_options) {  
+  google_map.map.setCenter(map_options.center);
+  google_map.map.setZoom(map_options.zoom);    
 }
 
 function buildMenu(google_map) {
@@ -34,25 +40,19 @@ function changeExample(google_map, selected_layer) {
   })
 }
 
+// Changes the Deck.gl layer applied to GoogleMapsOverlay
 function setLayer(google_map, layers) {
   let next = layers.next();
   if (next.value){
-
-  google_map.setLayer(next.value)
-
-  if (!next.done){
-    requestAnimationFrame(function() {setLayer(google_map, layers)});
+    google_map.setLayer(next.value)
+    if (!next.done){
+      requestAnimationFrame(function() {setLayer(google_map, layers)});
+    }
   }
 }
-}
 
-function setMap(google_map, map_options) {  
-  google_map.map.setCenter(map_options.center);
-  google_map.map.setZoom(map_options.zoom);    
-}
-
-async function run() {
+(async () => {
   const google_map = await initMap();
   buildMenu(google_map);
-}
-run();
+})();
+

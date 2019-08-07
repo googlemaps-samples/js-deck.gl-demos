@@ -14,21 +14,22 @@
  * limitations under the License.
  */
  
-import {MAP_STYLES} from './map_styles';
+import {MAP_STYLES} from './ui/map_styles';
 import {GoogleMapsOverlay} from '@deck.gl/google-maps';
 
 export class GoogleMapWithDeckGL {
 
   constructor() {
-    // Set your Google Maps API key here or via environment variable    
+    // Set your Google Maps Platform API key here or via environment variable    
+    this.google_maps_key;
     this.api;
     this.map;
     this.overlay;
   }
 
-  // Load the Google Maps Platform JS API
+  // Load the Google Maps Platform JS API async
   loadScript() {
-    const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+    const GOOGLE_MAPS_API_KEY = this.google_maps_key || process.env.GOOGLE_MAPS_API_KEY;
     const GOOGLE_MAPS_API_URL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
     const head = document.querySelector('head');
     const script = document.createElement('script');
@@ -40,16 +41,19 @@ export class GoogleMapWithDeckGL {
     });
   }
 
-  // Init the base map with Deck.gl overlay
   async initMapWithOverlay(options) {
     await this.loadScript();
     this.api = google.maps;
     this.overlay = new GoogleMapsOverlay();    
+    
+    // Init the map
     this.map = new this.api.Map(document.getElementById('map'), {
       center: options.center,
       zoom: options.zoom,
       styles: MAP_STYLES
     });    
+
+    // Put the Deck.gl overlay on the map
     this.overlay.setMap(this.map);    
   }
 

@@ -22,8 +22,10 @@ export class TripsLayerExample {
   constructor() {}
   static *getLayers(google_map) {
     const builder = new TripsBuilder();
-    let trips = builder.getTrips(google_map, this.getMapOptions());
-    for (let i = 1; i <= 300; i++) {
+    let trips = builder.getTrips(google_map, this.getMapOptions());    
+
+    // Limit how long the demo runs
+    for (let current_time = 0; current_time <= 1000; current_time++) {
       yield [
         new TripsLayer({
           id: 'trips-layer',
@@ -34,7 +36,7 @@ export class TripsLayerExample {
           widthMinPixels: 2,
           rounded: true,
           trailLength: 100,
-          currentTime: i
+          currentTime: current_time
         })
       ]      
     }    
@@ -56,21 +58,21 @@ export class TripsLayerExample {
 
 class TripsBuilder {
   constructor() {}
-  
+
+  // Builds trips using Places Library for endpoints and Directions Service for segments
   async getTrips(google_map, map_options) {
     let trips = [];
     let places = await this.getPlaces(google_map.api, google_map.map, map_options.center);
   
+    // Limit number of places so we don't hit rate limiting on directions
     places = places.slice(0,5);
-         
+        
+    // Build the set of trips 
     places.forEach(async (place, index) => {
       const START = place.place_id;
       for (let j = index + 1; j < places.length; j++) {
         const END = places[j].place_id;
         const trip = this.getDirections(google_map.api, START, END);
-        // if (trip.duration > trips.duration) {
-        //   trips.duration = trip.duration;
-        // }
         trips.push(trip);
       }
     });
@@ -78,6 +80,7 @@ class TripsBuilder {
     return trips;
   }
 
+  // Gets Places around the map center to use as trip endpoints
   async getPlaces(api, map, center) {
     const places_service = new api.places.PlacesService(map);
     const OPTIONS = {
@@ -97,6 +100,7 @@ class TripsBuilder {
     return places;
   }
 
+  // Gets Directions to define the trip route
   async getDirections (api, start, end) {
     const OPTIONS = {
       origin: { placeId: start },
@@ -112,15 +116,16 @@ class TripsBuilder {
           route = this.formatRoute(route);
           resolve(route);
         }
+        // Handle rate limiting from Directions Service if we hit it
         if (status === 'OVER_QUERY_LIMIT') {         
           this.getRoute(directionsService, OPTIONS);
         }        
       });
     });
-    // directions = await directions;
     return directions;
   }
 
+  // Formats Directions Service response to be TripsLayer-friendly
   formatRoute(route) {
     let timestamp = 0;
     route = route.map(step => {

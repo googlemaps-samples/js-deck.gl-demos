@@ -162,7 +162,7 @@ export const MAP_STYLES = [
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#d59563"
+        "visibility": "off"
       }
     ]
   },

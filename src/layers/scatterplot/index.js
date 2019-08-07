@@ -16,11 +16,14 @@
  
 import {ScatterplotLayer} from '@deck.gl/layers';
 
+// NOTE: THESE DATA URLs MAY PERIODICALLY CHANGE
+
 // source: NYC Open Data https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/pi5s-9p35
 const TREES =
   'https://data.cityofnewyork.us/resource/5rq2-4hqu.json?$limit=65000&&boroname=Manhattan';
 
-const METERS = 'https://data.cityofnewyork.us/resource/ykbm-ptyi.json?$limit=15000';
+// source: NYC Open Data https://data.cityofnewyork.us/Transportation/Parking-Meters-GPS-Coordinates-and-Status/5jsj-cq4s
+const METERS = 'https://data.cityofnewyork.us/resource/xx9u-e8wf.json?$limit=15000';
 
 export class ScatterplotLayerExample {
   constructor() {}

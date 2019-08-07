@@ -20,13 +20,16 @@ import {ArcLayer} from '@deck.gl/layers';
 const TAXI_RIDES =
   'https://data.cityofchicago.org/resource/wrvz-psew.json?$limit=20000';
 
+// Remove incomplete datapoints from the result set
+const query = '?$limit=25000&$where=pickup_centroid_latitude%20is%20not%20null%20AND%20dropoff_centroid_latitude%20is%20not%20null';
+
 export class ArcLayerExample {
   constructor() {}
 	static *getLayers() {
     return [
       new ArcLayer({
         id: 'arcs',
-        data: 'https://data.cityofchicago.org/resource/wrvz-psew.json?$limit=25000&$where=pickup_centroid_latitude%20is%20not%20null%20AND%20dropoff_centroid_latitude%20is%20not%20null',
+        data: 'https://data.cityofchicago.org/resource/wrvz-psew.json' + query,
         getSourcePosition: f => [f.pickup_centroid_longitude, f.pickup_centroid_latitude],
         getTargetPosition: f => [f.dropoff_centroid_longitude, f.dropoff_centroid_latitude],
         getSourceColor: [0, 128, 200],
