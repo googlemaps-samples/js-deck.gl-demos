@@ -88,7 +88,7 @@ class TripsBuilder {
     const places_service = new api.places.PlacesService(map);
     const OPTIONS = {
       location: new api.LatLng(center),
-      radius: '1600',
+      radius: '2000',
       type: ['restaurant']
     };
     const places_request = new Promise((resolve, reject) => {

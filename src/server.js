@@ -11,9 +11,9 @@ const googleMapsClient = require('@google/maps').createClient({
 const app = express();      
 app.listen(process.env.PORT || 1337);
 app.use(express.static(path.join(__dirname, '../dist')));
-app.use('/img', express.static(path.join(__dirname, '/ui/img')));
+app.use('/img', express.static(path.join(__dirname, '../img')));
 app.get('/', (req, res) => {       
-  res.sendFile(path.join(__dirname, '/ui/index.html'));      
+  res.sendFile(path.join(__dirname, '/index.html'));      
 });  
 
 // Get route details from the Directions API

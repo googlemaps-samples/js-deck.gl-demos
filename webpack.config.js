@@ -21,7 +21,7 @@ const CONFIG = {
 
   entry: {
   	app: './src/app.js',
-    index: './src/ui/index.js'
+    // index: './src/ui/index.js'
   },
 
   plugins: [

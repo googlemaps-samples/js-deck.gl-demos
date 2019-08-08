@@ -14,50 +14,63 @@
  * limitations under the License.
  */
  
-import {MAP_STYLES} from './ui/map_styles';
-import {GoogleMapsOverlay} from '@deck.gl/google-maps';
+import {layers} from './layers';
+import {GoogleMapWithDeckGL} from './google_map';
 
-export class GoogleMapWithDeckGL {
-
+// Builds the demo UI
+class App {
   constructor() {
-    // Set your Google Maps Platform API key here or via environment variable    
-    this.google_maps_key;
-    this.api;
-    this.map;
-    this.overlay;
+    this.GoogleMapWithDeckGL = new GoogleMapWithDeckGL();
+    this.animation_frames = [];
+    this.init();
   }
 
-  // Load the Google Maps Platform JS API async
-  loadScript() {
-    const GOOGLE_MAPS_API_KEY = this.google_maps_key || process.env.GOOGLE_MAPS_API_KEY;
-    const GOOGLE_MAPS_API_URL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
-    const head = document.querySelector('head');
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = GOOGLE_MAPS_API_URL;    
-    head.appendChild(script);
-    return new Promise(resolve => {
-      script.onload = resolve;
-    });
+  async init() {    
+    const selected_layer = layers[0];
+    const map_options = selected_layer.getMapOptions();
+    this.buildMenu();
+    await this.GoogleMapWithDeckGL.initMapWithOverlay(map_options);
+    this.changeExample(selected_layer);  
   }
 
-  async initMapWithOverlay(options) {
-    await this.loadScript();
-    this.api = google.maps;
-    this.overlay = new GoogleMapsOverlay();    
-    
-    // Init the map
-    this.map = new this.api.Map(document.getElementById('map'), {
-      center: options.center,
-      zoom: options.zoom,
-      styles: MAP_STYLES
-    });    
-
-    // Put the Deck.gl overlay on the map
-    this.overlay.setMap(this.map);    
+  buildMenu() {
+    const menu_div = document.getElementById('menu');  
+    layers.forEach(layer => {
+      const layer_metadata = layer.getMetadata();
+      const button = document.createElement('button');    
+      const thumbnail = document.createElement('img');
+      thumbnail.src = './img/' + layer_metadata.thumbnail;      
+      button.onclick = (() => {
+        this.changeExample(layer);
+      }).bind(this, layer);
+      button.appendChild(thumbnail);
+      menu_div.appendChild(button);
+    })    
   }
 
-  setLayer(deckgl_layers) {
-    this.overlay.setProps({layers: deckgl_layers});
+  changeExample(selected_layer) {
+    let layers = selected_layer.getLayers(this.GoogleMapWithDeckGL);
+    const map_options = selected_layer.getMapOptions();    
+    this.setLayer(layers);  
+    this.GoogleMapWithDeckGL.setMap(map_options);
   }
+
+  
+  // Changes the Deck.gl layer applied to GoogleMapsOverlay
+  setLayer(layers) {
+    // Interrupt currently animated layer
+    this.animation_frames.forEach(frame_id =>cancelAnimationFrame(frame_id));    
+    let next = layers.next();    
+    if (next.value){
+      this.GoogleMapWithDeckGL.setLayer(next.value)
+      if (!next.done){
+        const id = requestAnimationFrame((() => {
+            this.setLayer(layers)
+          }).bind(this, layers));
+        this.animation_frames.push(id)
+      }
+    }
+  }  
 }
+
+const app = new App();

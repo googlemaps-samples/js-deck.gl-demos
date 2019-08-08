@@ -5,10 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
-    "app": "node --experimental-modules src/app.js",
     "prestart": "npm run bundle",
-    "bundle": "webpack --config webpack.config.js",
-    "start-dev": "webpack-dev-server --progress --hot --open"
+    "bundle": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
