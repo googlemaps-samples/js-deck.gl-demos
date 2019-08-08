@@ -58,7 +58,6 @@ export class GoogleMapWithDeckGL {
   }
 
   setLayer(deckgl_layers) {
-    console.log(deckgl_layers)
     this.overlay.setProps({layers: deckgl_layers});
   }
 }

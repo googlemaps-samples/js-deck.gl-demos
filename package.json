@@ -26,11 +26,10 @@
     "@deck.gl/google-maps": "7.0.0",
     "@deck.gl/layers": "7.0.0",
     "@google/maps": "^0.5.5",
+    "express": "^4.17.1",
     "webpack": "^4.20.2"
   },
   "devDependencies": {
-    "express": "^4.17.1",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.1"
+    "webpack-cli": "^3.1.2"
   }
 }

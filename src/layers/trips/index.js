@@ -30,12 +30,12 @@ export class TripsLayerExample {
         new TripsLayer({
           id: 'trips-layer',
           data: trips,
-          getPath: d => d,
-          getColor: [253, 128, 93],
-          opacity: 0.7,
+          getPath: d => d.segments,
+          getColor: d => d.mode === 'driving' ? [239, 126, 35] : [85, 181, 238],
+          opacity: 0.6,
           widthMinPixels: 2,
           rounded: true,
-          trailLength: 100,
+          trailLength: 50,
           currentTime: current_time
         })
       ]      
@@ -63,16 +63,19 @@ class TripsBuilder {
   async getTrips(google_map, map_options) {
     let trips = [];
     let places = await this.getPlaces(google_map.api, google_map.map, map_options.center);
-  
-    // Limit number of places so we don't hit rate limiting on directions
-    places = places.slice(0,5);
-        
-    // Build the set of trips 
+   
+    // Build the set of trips and get directions between endpoints 
     places.forEach(async (place, index) => {
-      const START = place.place_id;
+      const origin = [
+        place.geometry.location.lat(),
+        place.geometry.location.lng()
+      ];
       for (let j = index + 1; j < places.length; j++) {
-        const END = places[j].place_id;
-        const trip = this.getDirections(google_map.api, START, END);
+        const dest = [
+          places[j].geometry.location.lat(),
+          places[j].geometry.location.lng()
+        ];
+        const trip = this.getDirections(google_map.api, origin, dest);
         trips.push(trip);
       }
     });
@@ -101,8 +104,14 @@ class TripsBuilder {
   }
 
   // Gets Directions to define the trip route
-  async getDirections (api, start, end) {
-    let request = fetch(`http://localhost:1337/directions?start=${start}&end=${end}`)
+  async getDirections (api, origin, dest) {
+    const base_uri = 'http://localhost:1337/directions';
+    const qs = `origin_lat=${origin[0]}&origin_lng=${origin[1]}
+                &dest_lat=${dest[0]}&dest_lng=${dest[1]}`;
+    let request = fetch(`${base_uri}?${qs}`)
+    let response = await request;
+    response = await response.json();
+    return response;
     // const directionsService = new api.DirectionsService();
     // let directions = new Promise((resolve, reject) => {
     //   directionsService.route(OPTIONS, (response, status) => {
@@ -122,17 +131,17 @@ class TripsBuilder {
   }
 
   // Formats Directions Service response to be TripsLayer-friendly
-  formatRoute(route) {
-    let timestamp = 0;
-    route = route.map(step => {
-      let formatted_step = [
-          step.start_location.lng(),
-          step.start_location.lat(),
-          timestamp
-      ]
-      timestamp += step.duration.value
-      return formatted_step;
-    });          
-    return route;
-  }
+  // formatRoute(route) {
+  //   let timestamp = 0;
+  //   route = route.map(step => {
+  //     let formatted_step = [
+  //         step.start_location.lng(),
+  //         step.start_location.lat(),
+  //         timestamp
+  //     ]
+  //     timestamp += step.duration.value
+  //     return formatted_step;
+  //   });          
+  //   return route;
+  // }
 }

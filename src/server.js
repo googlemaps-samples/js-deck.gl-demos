@@ -1,50 +1,55 @@
 const path = require('path');
 const express = require('express');
+
+// Google Maps Node.js utility library: https://goo.gle/maps-node-util
 const googleMapsClient = require('@google/maps').createClient({
   key: process.env.GoogleMapsAPIKey,
   Promise: Promise
 });
 
+// Setup local webserver
 const app = express();      
-app.listen(process.env.PORT || 8080);
+app.listen(process.env.PORT || 1337);
 app.use(express.static(path.join(__dirname, '../dist')));
 app.use('/img', express.static(path.join(__dirname, '/ui/img')));
-
 app.get('/', (req, res) => {       
   res.sendFile(path.join(__dirname, '/ui/index.html'));      
 });  
-  
-app.get('/directions', async(req, res) => {
-  const OPTIONS = {
-    origin: { placeId: req.query.start },
-    destination: { placeId: req.query.end },
-    travelMode: (Math.random() >= 0.5 ? 'driving': 'bicycling')
-  }
-  
-  let request = googleMapsClient.directions(OPTIONS).asPromise();
-  let result = await request;
 
-  result = result.json.routes[0].legs[0];
-console.log(result)
-  let directions = response.routes[0].legs[0].steps;
-  directions = formatRoute(route);
-  
+// Get route details from the Directions API
+app.get('/directions', async(req, res) => {
+  const options = {
+    origin: [+req.query.origin_lat, +req.query.origin_lng],
+    destination: [+req.query.dest_lat, +req.query.dest_lng],
+    mode: (Math.random() >= 0.5 ? 'driving': 'walking')
+  }
+  let response = await googleMapsClient.directions(options).asPromise();  
+  let directions = response.json.routes[0].legs[0];
+  let duration = directions.duration.value;
+  directions = directions.steps;
+  directions = formatDirections(directions);
+  directions = {
+    duration: duration,
+    segments: directions,
+    mode: options.mode
+  }
+  // Add CORS header
   res.set('Access-Control-Allow-Origin', '*')
   res.json(directions);
 });
   
   
 // Formats Directions Service response to be TripsLayer-friendly
-function formatRoute(route) {
+function formatDirections(directions) {
   let timestamp = 0;
-  route = route.map(step => {
-    let formatted_step = [
-        step.start_location.lng(),
-        step.start_location.lat(),
+  directions = directions.map(step => {
+    const formatted_step = [
+        step.start_location.lng,
+        step.start_location.lat,
         timestamp
     ]
     timestamp += step.duration.value
     return formatted_step;
   });          
-  return route;
+  return directions;
 }
