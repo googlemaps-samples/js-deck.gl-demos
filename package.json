@@ -4,7 +4,8 @@
   "description": "Examples of using Deck.gl as an overlay on the Google Maps JS API base map",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node src/server.js",
+    "app": "node --experimental-modules src/app.js",
     "prestart": "npm run bundle",
     "bundle": "webpack --config webpack.config.js",
     "start-dev": "webpack-dev-server --progress --hot --open"
@@ -28,8 +29,8 @@
     "webpack": "^4.20.2"
   },
   "devDependencies": {
+    "express": "^4.17.1",
     "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.1",
-    "express": "^4.17.1"
+    "webpack-dev-server": "^3.1.1"
   }
 }

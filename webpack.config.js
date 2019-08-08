@@ -21,16 +21,12 @@ const CONFIG = {
 
   entry: {
   	app: './src/app.js',
-    index: './src/index.js'
+    index: './src/ui/index.js'
   },
 
-  devServer: {
-  	contentBase: __dirname + '/src'
-  },
-  
   plugins: [
     // Read google maps token from environment variable
     new webpack.EnvironmentPlugin(['GOOGLE_MAPS_API_KEY'])
-  ]
+  ],
 };
 module.exports = CONFIG;

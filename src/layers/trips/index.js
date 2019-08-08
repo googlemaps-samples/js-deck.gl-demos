@@ -102,27 +102,23 @@ class TripsBuilder {
 
   // Gets Directions to define the trip route
   async getDirections (api, start, end) {
-    const OPTIONS = {
-      origin: { placeId: start },
-      destination: { placeId: end },
-      travelMode: 'DRIVING'
-    }
-    const directionsService = new api.DirectionsService();
-    let directions = new Promise((resolve, reject) => {
-      directionsService.route(OPTIONS, (response, status) => {
-        if (status === 'OK') {
-          let duration = response.routes[0].legs[0].duration.value;
-          let route = response.routes[0].legs[0].steps;
-          route = this.formatRoute(route);
-          resolve(route);
-        }
-        // Handle rate limiting from Directions Service if we hit it
-        if (status === 'OVER_QUERY_LIMIT') {         
-          this.getRoute(directionsService, OPTIONS);
-        }        
-      });
-    });
-    return directions;
+    let request = fetch(`http://localhost:1337/directions?start=${start}&end=${end}`)
+    // const directionsService = new api.DirectionsService();
+    // let directions = new Promise((resolve, reject) => {
+    //   directionsService.route(OPTIONS, (response, status) => {
+    //     if (status === 'OK') {
+    //       let duration = response.routes[0].legs[0].duration.value;
+    //       let route = response.routes[0].legs[0].steps;
+    //       route = this.formatRoute(route);
+    //       resolve(route);
+    //     }
+    //     // Handle rate limiting from Directions Service if we hit it
+    //     if (status === 'OVER_QUERY_LIMIT') {         
+    //       this.getRoute(directionsService, OPTIONS);
+    //     }        
+    //   });
+    // });
+    // return directions;
   }
 
   // Formats Directions Service response to be TripsLayer-friendly
