@@ -1,4 +1,4 @@
-export const MAP_STYLES = [
+export const map_styles = [
   {
     "featureType": "administrative.land_parcel",
     "elementType": "labels",

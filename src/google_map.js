@@ -14,13 +14,12 @@
  * limitations under the License.
  */
  
-import {MAP_STYLES as map_styles} from './map_styles';
+import {map_styles} from './map_styles';
 import {GoogleMapsOverlay} from '@deck.gl/google-maps';
 
 
 // Initializes Google Maps JS API, draws base map and adds Deck.gl overlay
 export class GoogleMapWithDeckGL {
-
   constructor() {
     // Set your Google Maps Platform API key here or via environment variable    
     this.google_maps_key;

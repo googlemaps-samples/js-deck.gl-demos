@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {HexagonLayer} from '@deck.gl/layers';
+import {HexagonLayer} from '@deck.gl/aggregation-layers';
 
 const COLOR_RANGE = [
   [1, 152, 189],
@@ -24,28 +24,39 @@ const COLOR_RANGE = [
   [254, 173, 84],
   [209, 55, 78]
 ];
+const base_uri = 'https://data.lacity.org/resource/6rrh-rzua.json';
+const query = '$limit=100000&$WHERE=location_1 IS NOT NULL';
+const data = `${base_uri}?${query}`;
 
-export class ArcLayerExample {
+export class HexagonLayerExample {
   constructor() {}
 	static *getLayers() {
     return [
       new HexagonLayer({
         id: 'heatmap',
-        colorRange: COLOR_RANGE,
         data,
+        colorRange: [
+  [1, 152, 189],
+  [73, 227, 206],
+  [216, 254, 181],
+  [254, 237, 177],
+  [254, 173, 84],
+  [209, 55, 78]
+],
         elevationRange: [0, 1000],
-        elevationScale: 250,
+        elevationScale: 100,
         extruded: true,
-        getPosition: d => d,
+        getPosition: d => [+d.location_1.longitude, +d.location_1.latitude],
         opacity: 1,
-        ...options
+        radius: 50,
+        lowerPercentile: 50
       })
     ]
   }
   static getMapOptions() {
     return {
-      center: {lat: 41.932875, lng: -87.761911},
-      zoom: 12
+      center: {lat: 34.051724, lng: -118.244023},
+      zoom: 7
     }
   }
   static getMetadata() {
