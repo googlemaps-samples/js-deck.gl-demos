@@ -35,7 +35,7 @@ export class TripsLayerExample {
           opacity: 0.6,
           widthMinPixels: 2,
           rounded: true,
-          trailLength: 50,
+          trailLength: 75,
           currentTime: current_time
         })
       ]      
@@ -44,7 +44,7 @@ export class TripsLayerExample {
 
   static getMapOptions() {    
     return {
-      center: {lat: 40.757870, lng: -73.985625},
+      center: {lat: 37.791250, lng: -122.407463},
       zoom: 16
     }
   }
