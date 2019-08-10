@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/amuramoto/deck.gl-demos#readme",
   "dependencies": {
-    "@deck.gl/aggregation-layers": "^7.1.11",
+    "@deck.gl/aggregation-layers": "7.0.0",
     "@deck.gl/core": "7.0.0",
     "@deck.gl/geo-layers": "7.0.0",
     "@deck.gl/google-maps": "7.0.0",
