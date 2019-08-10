@@ -44,7 +44,7 @@ export class HexagonLayerExample {
         extruded: true,
         radius: 100,
         getPosition: d => [+d.location_1.longitude, +d.location_1.latitude],
-        opacity: 0.1,        
+        opacity: 0.2,        
         upperPercentile: 50,
         coverage: 0.8
       })
