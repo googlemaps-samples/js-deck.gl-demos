@@ -52,7 +52,7 @@ export class HexagonLayerExample {
   }
   static getMapOptions() {
     return {
-      center: {lat: 34.054572, lng: -118.295968},
+      center: {lat: 34.068739, lng: -118.323170},
       zoom: 13
     }
   }
