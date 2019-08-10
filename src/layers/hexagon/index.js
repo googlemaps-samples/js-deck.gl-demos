@@ -17,12 +17,12 @@
 import {HexagonLayer} from '@deck.gl/aggregation-layers';
 
 const COLOR_RANGE = [   
-  [167, 255, 255],   
-  [66, 179, 246],  
-  [90, 168, 115],
-  [212, 255, 198],
+  [196, 255, 255],
+  [116, 255, 255],
+  [72, 189, 150],  
   [0, 171, 152],
-  [73, 169, 0]
+  [63, 141, 90],  
+  [47, 142, 34]
 ];
 
 // source: Los Angeles Open Data
@@ -42,23 +42,24 @@ export class HexagonLayerExample {
         elevationRange: [0, 300],
         elevationScale: 250,
         extruded: true,
-        radius: 75,
+        radius: 100,
         getPosition: d => [+d.location_1.longitude, +d.location_1.latitude],
-        opacity: 0.3,        
-        upperPercentile: 50
+        opacity: 0.1,        
+        upperPercentile: 50,
+        coverage: 0.8
       })
     ]
   }
   static getMapOptions() {
     return {
-      center: {lat: 34.051724, lng: -118.244023},
-      zoom: 11
+      center: {lat: 34.054572, lng: -118.295968},
+      zoom: 13
     }
   }
   static getMetadata() {
     return {
       name: 'Arc Layer',
-      thumbnail: 'arc.png'
+      thumbnail: 'hex.png'
     }
   }
 }
