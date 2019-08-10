@@ -16,13 +16,13 @@
 
 import {HexagonLayer} from '@deck.gl/aggregation-layers';
 
-const COLOR_RANGE = [
+const COLOR_RANGE = [   
+  [167, 255, 255],   
+  [66, 179, 246],  
+  [90, 168, 115],
   [212, 255, 198],
   [0, 171, 152],
-  [73, 169, 0],
-  [90, 168, 115],
-  [66, 179, 246],
-  [72, 107, 217]
+  [73, 169, 0]
 ];
 
 // source: Los Angeles Open Data
