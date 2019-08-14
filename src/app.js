@@ -20,6 +20,7 @@ import {GoogleMapWithDeckGL} from './google_map';
 // Builds the demo UI
 class App {
   constructor() {
+    console.log(process.env)
     this.GoogleMapWithDeckGL = new GoogleMapWithDeckGL();
     this.animation_frames = [];
     this.init();
@@ -72,7 +73,6 @@ class App {
     this.animation_frames.forEach(frame_id =>cancelAnimationFrame(frame_id));    
     let next = layers.next();    
     if (next.value){
-      console.log(next.value)
       this.GoogleMapWithDeckGL.setLayer(next.value)
       if (!next.done){
         const id = requestAnimationFrame((() => {

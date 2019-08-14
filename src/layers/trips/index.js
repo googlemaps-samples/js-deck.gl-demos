@@ -112,36 +112,5 @@ class TripsBuilder {
     let response = await request;
     response = await response.json();
     return response;
-    // const directionsService = new api.DirectionsService();
-    // let directions = new Promise((resolve, reject) => {
-    //   directionsService.route(OPTIONS, (response, status) => {
-    //     if (status === 'OK') {
-    //       let duration = response.routes[0].legs[0].duration.value;
-    //       let route = response.routes[0].legs[0].steps;
-    //       route = this.formatRoute(route);
-    //       resolve(route);
-    //     }
-    //     // Handle rate limiting from Directions Service if we hit it
-    //     if (status === 'OVER_QUERY_LIMIT') {         
-    //       this.getRoute(directionsService, OPTIONS);
-    //     }        
-    //   });
-    // });
-    // return directions;
   }
-
-  // Formats Directions Service response to be TripsLayer-friendly
-  // formatRoute(route) {
-  //   let timestamp = 0;
-  //   route = route.map(step => {
-  //     let formatted_step = [
-  //         step.start_location.lng(),
-  //         step.start_location.lat(),
-  //         timestamp
-  //     ]
-  //     timestamp += step.duration.value
-  //     return formatted_step;
-  //   });          
-  //   return route;
-  // }
 }

@@ -26,7 +26,7 @@ const CONFIG = {
 
   plugins: [
     // Read google maps token from environment variable
-    new webpack.EnvironmentPlugin(['GOOGLE_MAPS_API_KEY'])
+    new webpack.EnvironmentPlugin(['GoogleMapsAPIKey'])
   ],
 };
 module.exports = CONFIG;
