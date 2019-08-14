@@ -23,6 +23,7 @@ class App {
     this.GoogleMapWithDeckGL = new GoogleMapWithDeckGL();
     this.animation_frames = [];
     this.init();
+    this.selected;
   }
 
   async init() {    
@@ -35,16 +36,25 @@ class App {
 
   buildMenu() {
     const menu_div = document.getElementById('menu');  
-    layers.forEach(layer => {
+    layers.forEach((layer, index) => {
       const layer_metadata = layer.getMetadata();
-      const button = document.createElement('button');    
-      const thumbnail = document.createElement('img');
-      thumbnail.src = './img/' + layer_metadata.thumbnail;      
-      button.onclick = (() => {
+      const button = document.createElement('button');
+      const label = document.createElement('div');
+      label.classList.add('label');
+      label.innerText = layer_metadata.name;
+      button.style.backgroundImage = `url("./img/${layer_metadata.thumbnail}")`;      
+      button.onclick = (() => {                 
+        this.selected.classList.remove('selected');    
+        this.selected = button;
+        this.selected.classList.add('selected');
         this.changeExample(layer);
       }).bind(this, layer);
-      button.appendChild(thumbnail);
+      button.appendChild(label);
       menu_div.appendChild(button);
+      if (index === 0) {
+        this.selected = button;
+        this.selected.classList.add('selected');
+      }
     })    
   }
 

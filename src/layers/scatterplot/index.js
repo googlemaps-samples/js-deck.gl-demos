@@ -67,7 +67,7 @@ export class ScatterplotLayerExample {
   }
   static getMetadata() {
     return {
-      name: 'Scatterplot Layer',
+      name: 'scatterplot',
       thumbnail: 'scatterplot.png'
     }
   }

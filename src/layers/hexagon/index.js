@@ -58,7 +58,7 @@ export class HexagonLayerExample {
   }
   static getMetadata() {
     return {
-      name: 'Arc Layer',
+      name: 'hexagon',
       thumbnail: 'hex.png'
     }
   }

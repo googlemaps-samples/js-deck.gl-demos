@@ -17,8 +17,8 @@
 import {ArcLayer} from '@deck.gl/layers';
 
 // source: Chicago Data Portal https://data.cityofchicago.org/Transportation/Taxi-Trips/wrvz-psew
-const TAXI_RIDES =
-  'https://data.cityofchicago.org/resource/wrvz-psew.json?$limit=20000';
+const businesses =
+  'https://data.seattle.gov/resource/wnbq-64tb.json';
 
 // Remove incomplete datapoints from the result set
 const query = '?$limit=25000&$where=pickup_centroid_latitude%20is%20not%20null%20AND%20dropoff_centroid_latitude%20is%20not%20null';
@@ -27,15 +27,20 @@ export class ArcLayerExample {
   constructor() {}
 	static *getLayers() {
     return [
-      new ArcLayer({
-        id: 'arcs',
-        data: 'https://data.cityofchicago.org/resource/wrvz-psew.json' + query,
-        getSourcePosition: f => [f.pickup_centroid_longitude, f.pickup_centroid_latitude],
-        getTargetPosition: f => [f.dropoff_centroid_longitude, f.dropoff_centroid_latitude],
-        getSourceColor: [0, 128, 200],
-        getTargetColor: [255, 101, 101],
-        getWidth: 0.5
-    	})
+      new IconLayer({
+          id: 'icon-layer',
+          data: businesses,
+          //pickable: true,
+          iconMapping: '/static/icon-layer/location-icon-mapping.json',
+          iconAtlas: '/static/icon-layer/location-icon-atlas.png',
+          getIcon: d => 'marker',
+          getPosition: d => d.coordinates,
+          getSize: 100,
+          sizeUnits: 'meters',
+          //sizeScale: 1,
+          sizeMinPixels: 8,
+          sizeMaxPixels: 256
+      })
     ]
   }
   static getMapOptions() {
@@ -46,7 +51,7 @@ export class ArcLayerExample {
   }
   static getMetadata() {
     return {
-      name: 'Arc Layer',
+      name: 'icon',
       thumbnail: 'arc.png'
     }
   }

@@ -25,7 +25,7 @@ export class TripsLayerExample {
     let trips = builder.getTrips(google_map, this.getMapOptions());    
 
     // Limit how long the demo runs
-    for (let current_time = 0; current_time <= 1000; current_time++) {
+    for (let current_time = 0; current_time <= 2000; current_time++) {
       yield [
         new TripsLayer({
           id: 'trips-layer',
@@ -50,7 +50,7 @@ export class TripsLayerExample {
   }
   static getMetadata() {
     return {
-      name: 'Trips Layer',
+      name: 'trips',
       thumbnail: 'trips.png'
     }
   }
