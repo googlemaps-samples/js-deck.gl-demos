@@ -55,22 +55,6 @@
         border: none;
         box-shadow: 0px 0px 3px 0px #8C8C8C;
         background-size: cover;
-        transition-property: width, height;
-        transition-duration: 0.3s;
-      }
-
-      button:hover {
-        height: 225px;
-        width: 350px;
-        transition-property: width, height;
-        transition-duration: 0.3s;        
-      }
-
-      button:focus, .selected {        
-        height: 150px;
-        width: 225px;
-        outline: #EEEEEE;
-        box-shadow: 0px 0px 10px 0px #AAAAAA;        
       }
 
       .label {
@@ -86,9 +70,30 @@
         line-height: 125px;
       }
 
+      button:hover {
+        height: 225px;
+        width: 350px;        
+      }
+
+      button:focus, .selected {        
+        outline: #EEEEEE;
+        box-shadow: 0px 0px 10px 0px #AAAAAA;        
+      }
+
+      .selected,
+      .selected > .label, 
+      .selected:hover, 
+      .selected:hover > .label {
+        height: 150px;
+        width: 225px;
+        font-weight: 400;
+        line-height: 150px;
+      }
+
+      
+
       button:focus > .label,
       .selected > .label {        
-        line-height: 150px;        
         background-color: rgba(0,0,0,0.4);
       }
 
@@ -96,10 +101,13 @@
         line-height: 225px;        
       }
 
-      button, .label,
-      .selected, .selected > .label {
+      button, 
+      button:hover,
+      .label,
+      .selected, 
+      .selected > .label {
         transition-property: width, height, line-height;
-        transition-duration: 0.3s;
+        transition-duration: 0.2s;
       }
 
     </style>

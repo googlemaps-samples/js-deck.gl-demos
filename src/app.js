@@ -62,8 +62,12 @@ class App {
   changeExample(selected_layer) {
     let layers = selected_layer.getLayers(this.GoogleMapWithDeckGL);
     const map_options = selected_layer.getMapOptions();    
-    this.setLayer(layers);  
-    this.GoogleMapWithDeckGL.setMap(map_options);
+    // short timeout so map load doesn't jank menu css transitions
+    setTimeout(()=>{
+      this.setLayer(layers);  
+      this.GoogleMapWithDeckGL.setMap(map_options);
+    },100)
+    
   }
 
   
