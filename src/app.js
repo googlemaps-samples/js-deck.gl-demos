@@ -15,7 +15,7 @@
  */
  
 import {layers} from './layers';
-import {GoogleMapWithDeckGL} from './google_map';
+import {GoogleMapWithDeckGL} from './GoogleMapWithDeckGL';
 
 // Builds the demo UI
 class App {
