@@ -1,4 +1,4 @@
-## Maps JS API w/ deck.gl Example App
+# Maps JS API with deck.gl Example App
 
 This example app shows how you can use the Maps Javascript API with the [Deck.gl](https://deck.gl) OSS framework to render high-quality 3D data visualizations on top of Google Maps.
 
