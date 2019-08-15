@@ -12,7 +12,7 @@ To learn more about how the deck.gl and Google Maps Platform teams worked togeth
 
 ## Running the demo
 
-To see the demo running live, go to https://goo.gle/deckgl-demos.
+To see the demo running live, go to https://goo.gle/deckgl-demos. Please be patient while the data loads for each layers. In some cases, hundreds of thousands of data points are being fetched over http.
 
 To run it on localhost, do the following:
 
