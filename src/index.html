@@ -47,12 +47,22 @@
         left: 75px;
         width: 250px;
         height: 100%;   
-        overflow-y: scroll;     
+        overflow-y: scroll;        
       }
 
       #menu::-webkit-scrollbar {
         width: 0px;
         background: transparent;
+      }
+
+      .fade {
+        opacity: 0;        
+      }
+
+      #menu, 
+      .fade {
+        transition-property: opacity;
+        transition-duration: 0.2s; 
       }
 
       button {

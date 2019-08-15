@@ -29,14 +29,22 @@ class App {
 
   async init() {    
     const selected_layer = layers[0];
-    const map_options = selected_layer.getMapOptions();
+    const map_options = selected_layer.getMapOptions();    
+    await this.GoogleMapWithDeckGL.initMapWithOverlay(map_options);    
     this.buildMenu();
-    await this.GoogleMapWithDeckGL.initMapWithOverlay(map_options);
     this.changeExample(selected_layer);  
   }
 
   buildMenu() {
-    const menu_div = document.getElementById('menu');  
+    const menu = document.getElementById('menu');  
+    // remove the menu when the map is being dragged
+    this.GoogleMapWithDeckGL.map.addListener('dragstart', () => {      
+      menu.classList.add('fade');
+    });    
+    this.GoogleMapWithDeckGL.map.addListener('dragend', () => {
+      menu.classList.remove('fade');
+    });
+    // add the available layers to the menu
     layers.forEach((layer, index) => {
       const layer_metadata = layer.getMetadata();
       const button = document.createElement('button');
@@ -44,6 +52,7 @@ class App {
       label.classList.add('label');
       label.innerText = layer_metadata.name;
       button.style.backgroundImage = `url("./img/${layer_metadata.thumbnail}")`;      
+      // style the selected layer in menu
       button.onclick = (() => {                 
         this.selected.classList.remove('selected');    
         this.selected = button;
@@ -51,12 +60,12 @@ class App {
         this.changeExample(layer);
       }).bind(this, layer);
       button.appendChild(label);
-      menu_div.appendChild(button);
+      menu.appendChild(button);
       if (index === 0) {
         this.selected = button;
         this.selected.classList.add('selected');
-      }
-    })    
+      }      
+    });
   }
 
   changeExample(selected_layer) {
