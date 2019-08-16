@@ -14,25 +14,24 @@
  * limitations under the License.
  */
  
-import {layers} from './layers';
+import {examples} from './example-layers';
 import {GoogleMapWithDeckGL} from './GoogleMapWithDeckGL';
 
 // Builds the demo UI
 class App {
   constructor() {
-    console.log(process.env)
     this.GoogleMapWithDeckGL = new GoogleMapWithDeckGL();
     this.animation_frames = [];
     this.init();
-    this.selected;
+    this.selected_button;
   }
 
   async init() {    
-    const selected_layer = layers[0];
-    const map_options = selected_layer.getMapOptions();    
+    const default_example = examples[0];
+    const map_options = default_example.getMapOptions();    
     await this.GoogleMapWithDeckGL.initMapWithOverlay(map_options);    
     this.buildMenu();
-    this.changeExample(selected_layer);  
+    this.changeExample(default_example);  
   }
 
   buildMenu() {
@@ -45,32 +44,32 @@ class App {
       menu.classList.remove('fade');
     });
     // add the available layers to the menu
-    layers.forEach((layer, index) => {
-      const layer_metadata = layer.getMetadata();
+    examples.forEach((example, index) => {
+      const example_metadata = example.getMetadata();
       const button = document.createElement('button');
       const label = document.createElement('div');
       label.classList.add('label');
-      label.innerText = layer_metadata.name;
-      button.style.backgroundImage = `url("./img/${layer_metadata.thumbnail}")`;      
+      label.innerText = example_metadata.name;
+      button.style.backgroundImage = `url("./img/${example_metadata.thumbnail}")`;      
       // style the selected layer in menu
       button.onclick = (() => {                 
-        this.selected.classList.remove('selected');    
-        this.selected = button;
-        this.selected.classList.add('selected');
-        this.changeExample(layer);
-      }).bind(this, layer);
+        this.selected_button.classList.remove('selected');    
+        this.selected_button = button;
+        this.selected_button.classList.add('selected');
+        this.changeExample(example);
+      }).bind(this, example);
       button.appendChild(label);
       menu.appendChild(button);
       if (index === 0) {
-        this.selected = button;
-        this.selected.classList.add('selected');
+        this.selected_button = button;
+        this.selected_button.classList.add('selected');
       }      
     });
   }
 
-  changeExample(selected_layer) {
-    let layers = selected_layer.getLayers(this.GoogleMapWithDeckGL);
-    const map_options = selected_layer.getMapOptions();    
+  changeExample(example) {
+    let layers = example.getLayers(this.GoogleMapWithDeckGL);
+    const map_options = example.getMapOptions();    
     // short timeout so map load doesn't jank menu css transitions
     setTimeout(()=>{
       this.setLayer(layers);  
