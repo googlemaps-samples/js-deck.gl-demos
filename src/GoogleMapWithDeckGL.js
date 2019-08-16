@@ -14,15 +14,15 @@
  * limitations under the License.
  */
  
+// Set your API key in src/googleMapsAPIKey or GoogleMapsAPIKey env var
+import * as google_maps_api_key from './GoogleMapsAPIKey';
 import {map_styles} from './map_styles';
 import {GoogleMapsOverlay} from '@deck.gl/google-maps';
 
-
 // Initializes Google Maps JS API, draws base map and adds Deck.gl overlay
 export class GoogleMapWithDeckGL {
-  constructor() {
-    // Set your Google Maps Platform API key here or via environment variable    
-    this.google_maps_key;
+  constructor() {    
+    this.google_maps_api_key = google_maps_api_key;
     this.api;
     this.map;
     this.overlay;
@@ -30,7 +30,7 @@ export class GoogleMapWithDeckGL {
 
   // Load the Google Maps Platform JS API async
   loadScript() {
-    const GOOGLE_MAPS_API_KEY = this.google_maps_key || process.env.GoogleMapsAPIKey;
+    const GOOGLE_MAPS_API_KEY = this.google_maps_api_key || process.env.GoogleMapsAPIKey;
     const GOOGLE_MAPS_API_URL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
     const head = document.querySelector('head');
     const script = document.createElement('script');

@@ -18,7 +18,7 @@ To run it on localhost, do the following:
 
 1. Download the repo.
 
-2. Set your API key either by setting a `GoogleMapsAPIKey` environment variable, or setting `this.google_maps_key` in the constructor of the `GoogleMapsWithDeckGL` class in `/src/GoogleMapsWithDeckGL.js`.
+2. Set your API key either in a `GoogleMapsAPIKey` environment variable, or in `/src/GoogleMapsAPIKey.js`.
 
 3. Run `npm install` to download dependencies.
 

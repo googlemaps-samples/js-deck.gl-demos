@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
+// Set your api key in src/GoogleMapsAPIKey or GoogleMapsAPIKey env var
+const googlemaps_api_key = require('./GoogleMapsAPIKey');
 const path = require('path');
 const express = require('express');
 
 // Google Maps Node.js utility library: https://goo.gle/maps-node-util
-const googleMapsClient = require('@google/maps').createClient({
-  key: process.env.GoogleMapsAPIKey,
+const googlemaps_client = require('@google/maps').createClient({
+  key: googlemaps_api_key || process.env.GoogleMapsAPIKey,
   Promise: Promise
 });
 
@@ -39,7 +41,7 @@ app.get('/directions', async(req, res) => {
     destination: [+req.query.dest_lat, +req.query.dest_lng],
     mode: (Math.random() >= 0.5 ? 'driving': 'walking')
   }
-  let response = await googleMapsClient.directions(options).asPromise();  
+  let response = await googlemaps_client.directions(options).asPromise();  
   let directions = response.json.routes[0].legs[0];
   let duration = directions.duration.value;
   directions = directions.steps;

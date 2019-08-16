@@ -20,17 +20,41 @@ import * as GoogleMapsClient from '@google/maps';
 
 export class TripsLayerExample {
   constructor() {}
-  static *getLayers(google_map) {
-    const builder = new TripsBuilder();
-    let trips = builder.getTrips(google_map, this.getMapOptions());    
+  // static *getLayers(google_map) {
+  //   const builder = new TripsBuilder();
+  //   let trips = builder.getTrips(google_map, this.getMapOptions());    
 
-    // Limit how long the demo runs
-    for (let current_time = 0; current_time <= 2000; current_time++) {
-      yield [
+  //   // Limit how long the demo runs
+  //   for (let current_time = 0; current_time <= 2000; current_time++) {
+  //     yield [
+  //       new TripsLayer({
+  //         id: 'trips-layer',
+  //         data: trips,
+  //         getPath: d => d.segments,
+  //         getColor: d => d.mode === 'driving' ? [239, 126, 35] : [85, 181, 238],
+  //         opacity: 0.6,
+  //         widthMinPixels: 2,
+  //         rounded: true,
+  //         trailLength: 75,
+  //         currentTime: current_time
+  //       })
+  //     ]      
+  //   }    
+  // }
+
+  static *getLayers(google_map) {
+    let res = [];
+    const builder = new TripsBuilder();
+    let current_time = 0;
+    let trips = builder.test(google_map, this.getMapOptions());    
+    let next = trips.next();    
+    let i = 0;
+    while(i<5) {      
+      let layer = [
         new TripsLayer({
-          id: 'trips-layer',
-          data: trips,
-          getPath: d => d.segments,
+          id: 'trips-layer-' + i,
+          data: next,
+          getPath: d => d.value.map(async(segments) => {let x = await segments; return x.segments}),
           getColor: d => d.mode === 'driving' ? [239, 126, 35] : [85, 181, 238],
           opacity: 0.6,
           widthMinPixels: 2,
@@ -38,8 +62,13 @@ export class TripsLayerExample {
           trailLength: 75,
           currentTime: current_time
         })
-      ]      
-    }    
+      ]
+      res.push(layer);
+      next = trips.next();    
+      console.log(res)
+      i++;
+      yield res;      
+    };
   }
 
   static getMapOptions() {    
@@ -58,6 +87,33 @@ export class TripsLayerExample {
 
 class TripsBuilder {
   constructor() {}
+
+
+async *test(google_map, map_options) {
+    let trips = [];
+    let places = await this.getPlaces(google_map.api, google_map.map, map_options.center);
+   
+    // Build the set of trips and get directions between endpoints 
+    places.forEach(async (place, index) => {
+      const origin = [
+        place.geometry.location.lat(),
+        place.geometry.location.lng()
+      ];
+      for (let j = index + 1; j < places.length; j++) {
+        const dest = [
+          places[j].geometry.location.lat(),
+          places[j].geometry.location.lng()
+        ];
+        trips.push([origin, dest]);       
+      }
+    });
+    trips = trips.map(async (trip) => await this.getDirections(google_map.api, trip[0], trip[1]));
+    while (trips.length > 0) {      
+      yield trips.splice(0, 5);
+    }
+  }
+
+
 
   // Builds trips using Places Library for endpoints and Directions Service for segments
   async getTrips(google_map, map_options) {
