@@ -45,16 +45,16 @@ export class TripsLayerExample {
   static *getLayers(google_map) {
     let res = [];
     const builder = new TripsBuilder();
-    let current_time = 0;
+    let current_time = 1000;
     let trips = builder.test(google_map, this.getMapOptions());    
     let next = trips.next();    
     let i = 0;
     while(i<5) {      
-      let layer = [
+      let layer = 
         new TripsLayer({
           id: 'trips-layer-' + i,
           data: next,
-          getPath: d => d.value.map(async(segments) => {let x = await segments; return x.segments}),
+          getPath: d => d.value.segments,
           getColor: d => d.mode === 'driving' ? [239, 126, 35] : [85, 181, 238],
           opacity: 0.6,
           widthMinPixels: 2,
@@ -62,11 +62,11 @@ export class TripsLayerExample {
           trailLength: 75,
           currentTime: current_time
         })
-      ]
+      
       res.push(layer);
-      next = trips.next();    
-      console.log(res)
+      next = trips.next();
       i++;
+      console.log(res)
       yield res;      
     };
   }
@@ -109,7 +109,7 @@ async *test(google_map, map_options) {
     });
     trips = trips.map(async (trip) => await this.getDirections(google_map.api, trip[0], trip[1]));
     while (trips.length > 0) {      
-      yield trips.splice(0, 5);
+      yield await Promise.all(trips.splice(0, 5));
     }
   }
 
