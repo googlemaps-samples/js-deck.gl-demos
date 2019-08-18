@@ -84,7 +84,7 @@ class App {
     // Interrupt currently animated layer
     this.animation_frames.forEach(frame_id =>cancelAnimationFrame(frame_id));    
     let next = layers.next();    
-    if (next.value){      
+    if (next.value){
       this.GoogleMapWithDeckGL.setLayer(next.value)
       if (!next.done){
         const id = requestAnimationFrame((() => {

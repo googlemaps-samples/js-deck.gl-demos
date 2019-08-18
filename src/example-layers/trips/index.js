@@ -42,19 +42,24 @@ export class TripsLayerExample {
   //   }    
   // }
 
-  static *getLayers(google_map) {
-    let res = [];
+  static *getLayers(google_map) {    
+    let data = [];
     const builder = new TripsBuilder();
-    let current_time = 1000;
-    let trips = builder.test(google_map, this.getMapOptions());    
-    let next = trips.next();    
+    let trips = builder.test(google_map, this.getMapOptions());        
+    let current_time = 0
     let i = 0;
-    while(i<5) {      
-      let layer = 
-        new TripsLayer({
-          id: 'trips-layer-' + i,
-          data: next,
-          getPath: d => d.value.segments,
+    while (i<38){       
+      data.push(trips.next());
+      i++;    
+    }        
+    while (current_time < 1000){
+      let res = [];
+      data.forEach((chunk, index) => {           
+        let layer = new TripsLayer({
+          id: 'trips-layer-' + index,
+          data: chunk,
+          dataTransform: d => d.value,
+          getPath: d => d.segments,
           getColor: d => d.mode === 'driving' ? [239, 126, 35] : [85, 181, 238],
           opacity: 0.6,
           widthMinPixels: 2,
@@ -62,13 +67,12 @@ export class TripsLayerExample {
           trailLength: 75,
           currentTime: current_time
         })
-      
-      res.push(layer);
-      next = trips.next();
-      i++;
-      console.log(res)
+        res.push(layer);
+      })            
+      current_time++;
       yield res;      
-    };
+    }
+    
   }
 
   static getMapOptions() {    
@@ -104,12 +108,13 @@ async *test(google_map, map_options) {
           places[j].geometry.location.lat(),
           places[j].geometry.location.lng()
         ];
-        trips.push([origin, dest]);       
+        const trip = this.getDirections(google_map.api, origin, dest);
+        trips.push(trip);
       }
     });
-    trips = trips.map(async (trip) => await this.getDirections(google_map.api, trip[0], trip[1]));
     while (trips.length > 0) {      
-      yield await Promise.all(trips.splice(0, 5));
+      let chunk = await Promise.all(trips.splice(0, 5));
+      yield chunk;
     }
   }
 
