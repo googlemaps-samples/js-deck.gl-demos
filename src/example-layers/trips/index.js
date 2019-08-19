@@ -48,7 +48,7 @@ export class TripsLayerExample {
     let trips = builder.test(google_map, this.getMapOptions());        
     let current_time = 0
     let i = 0;
-    while (i<38){       
+    while (i<1){       
       data.push(trips.next());
       i++;    
     }        
@@ -99,16 +99,17 @@ async *test(google_map, map_options) {
    
     // Build the set of trips and get directions between endpoints 
     places.forEach(async (place, index) => {
-      const origin = [
-        place.geometry.location.lat(),
-        place.geometry.location.lng()
-      ];
+      const origin = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      };
       for (let j = index + 1; j < places.length; j++) {
-        const dest = [
-          places[j].geometry.location.lat(),
-          places[j].geometry.location.lng()
-        ];
+        const dest = {
+          lat: places[j].geometry.location.lat(),
+          lng: places[j].geometry.location.lng()
+        };
         const trip = this.getDirections(google_map.api, origin, dest);
+        console.log(trip)
         trips.push(trip);
       }
     });
@@ -127,20 +128,21 @@ async *test(google_map, map_options) {
    
     // Build the set of trips and get directions between endpoints 
     places.forEach(async (place, index) => {
-      const origin = [
-        place.geometry.location.lat(),
-        place.geometry.location.lng()
-      ];
+      const origin = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      };
       for (let j = index + 1; j < places.length; j++) {
-        const dest = [
-          places[j].geometry.location.lat(),
-          places[j].geometry.location.lng()
-        ];
+        const dest = {
+          lat: places[j].geometry.location.lat(),
+          lng: places[j].geometry.location.lng()
+        };
         const trip = this.getDirections(google_map.api, origin, dest);
-        trips.push(trip);
+        trips.push(trip);        
       }
     });
     trips = await Promise.all(trips);
+    console.log(trips)
     return trips;
   }
 
@@ -166,12 +168,46 @@ async *test(google_map, map_options) {
 
   // Gets Directions to define the trip route
   async getDirections (api, origin, dest) {
-    const base_uri = 'http://localhost:1337/directions';
-    const qs = `origin_lat=${origin[0]}&origin_lng=${origin[1]}
-                &dest_lat=${dest[0]}&dest_lng=${dest[1]}`;
-    let request = fetch(`${base_uri}?${qs}`)
-    let response = await request;
-    response = await response.json();
-    return response;
+    const directions_service = new api.DirectionsService();  
+    const options = {
+      origin: new api.LatLng(origin.lat, origin.lng),
+      destination: new api.LatLng(dest.lat, dest.lng),
+      travelMode: 'DRIVING'
+    }    
+    let directions = new Promise((resolve, reject) => {
+      directions_service.route(options, (response, status) => {       
+        if (status === 'OK') {
+          let duration = response.routes[0].legs[0].duration.value;
+          let route = response.routes[0].legs[0].steps;
+          route = this.formatRoute(route);                    
+          resolve(route);
+        }
+        if (status === 'OVER_QUERY_LIMIT') {
+          setTimeout(() => this.getDirections(api, origin, dest), 1000)         
+        }        
+      });
+    });
+    return directions
+    // const base_uri = 'http://localhost:1337/directions';
+    // const qs = `origin_lat=${origin[0]}&origin_lng=${origin[1]}
+    //             &dest_lat=${dest[0]}&dest_lng=${dest[1]}`;
+    // let request = fetch(`${base_uri}?${qs}`)
+    // let response = await request;
+    // response = await response.json();
+    // return response;
+  }
+
+  formatRoute(route) {
+    let timestamp = 0;
+    route = route.map(step => {
+      let formatted_step = [
+          step.start_location.lng(),
+          step.start_location.lat(),
+          timestamp
+      ]
+      timestamp += step.duration.value
+      return formatted_step;
+    });              
+    return route;
   }
 }
