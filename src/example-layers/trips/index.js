@@ -55,7 +55,7 @@ export class TripsLayerExample {
   static getMapOptions() {    
     return {
       center: {lat: 37.787732, lng: -122.403436},
-      zoom: 16
+      zoom: 15
     }
   }
   static getMetadata() {
