@@ -42,7 +42,7 @@ export class TripsLayerExample {
   //   }    
   // }
 
-  static *getLayers(google_map) {    
+  static async *getLayers(google_map) {        
     let data = [];
     const builder = new TripsBuilder(google_map);
     let trips = builder.test(this.getMapOptions());        
@@ -50,40 +50,38 @@ export class TripsLayerExample {
     let i = 0;
     let j = 0;    
     // while (i<3){       
-    //   data.push(trips.next());
+      
+    //   data.push(next);
+    //   // console.log(next.value)  
     //   current_time.push(0);
     //   i++;    
     // }        
-    while (j < 1000){
-      let res = [];
-      if (j<4) {
-        let next = trips.next();
-        console.log(next)
-        data.push(next);          
-        current_time.push(0);
-      }      
-      // console.log(data)      
-      data.forEach((chunk, index) => {           
+    // console.log(data)
+    let next = await trips.next();    
+    while (!next.done){
+      data.push(next.value)
+      current_time.push(0);
+      console.log(data)
+      next = await trips.next();
+    }
+
+console.log('ok')
+    let res = [];
+    setInterval(()=> {
+      data.forEach((chunk, index) => {
         let layer = new TripsLayer({
           id: 'trips-layer-' + index,
-          data: chunk,
-          dataTransform: d => d.value,
-          getPath: d => d.route,
-          getColor: d => d.mode === 'driving' ? [239, 126, 35] : [85, 181, 238],
+          data: chunk.value,          
+          getPath: d => d.route,        
           opacity: 0.6,
           widthMinPixels: 2,
           rounded: true,
           trailLength: 75,
           currentTime: current_time[index]++
         })
-        res.push(layer);
       })
-      // console.log(current_time)            
-      j++
-      // console.log(res)
-      yield res;      
-    }    
-    
+      // yield res;
+    }, 1000)
   }
 
   static getMapOptions() {    
@@ -103,6 +101,7 @@ export class TripsLayerExample {
 class TripsBuilder {
   constructor(google_map) {
     this.google_map = google_map;
+    this.directions_service = new google_map.api.DirectionsService();
   }
 
   async *test(map_options) {
@@ -126,11 +125,21 @@ class TripsBuilder {
     });
 
     while (trips.length > 0) {
-      // console.log(trips.length)
+      // console.log(trips.length)      
       let chunk = trips.splice(0, 5);
-      chunk = chunk.map(trip => this.getDirections(trip));
+      chunk =  chunk.map(async(trip) => {
+        trip = await this.getDirections(trip); 
+        const duration = trip.duration.value;        
+        const route = trip.steps;
+        trip = {
+          duration: duration,
+          route: this.formatRoute(route)
+        }
+        return trip
+      });      
       chunk = await Promise.all(chunk);
-      console.log(chunk)      
+
+      // console.log(chunk)      
       yield chunk;
     }
 
@@ -190,28 +199,35 @@ class TripsBuilder {
 
   // Gets Directions to define the trip route
   async getDirections (trip) {
-    const directions_service = new this.google_map.api.DirectionsService();    
     const options = {
       origin: new this.google_map.api.LatLng(trip.origin.lat, trip.origin.lng),
       destination: new this.google_map.api.LatLng(trip.dest.lat, trip.dest.lng),
       travelMode: 'DRIVING'
     }    
-    const directions = new Promise((resolve, reject) => {
-      directions_service.route(options, (response, status) => {       
-        if (status === 'OK') {          
-          const duration = response.routes[0].legs[0].duration.value;
-          const route = response.routes[0].legs[0].steps;
-          const res = {
-            duration: duration,
-            route: this.formatRoute(route)
-          }       
-          resolve(res);
-        }
-        reject(status);       
-      });        
-    });
+    let directions = new Promise((resolve, reject) => {
+      let directions_service = this.directions_service;
+      let id = setInterval(() => {
+        directions_service.route(options, function x(response, status){
+          if (status === 'OK') {      
+            clearInterval(id);                     
+            resolve(response.routes[0].legs[0]);
+          }          
+        });        
+      }, 1000)
+      
     
+    });
     return directions;
+    // try {
+    //   directions = await directions;
+    //   return directions;
+    // } catch (e) {
+    //   console.log(e);
+    //   setTimeout(async() => await this.getDirections(trip), 2000)
+      
+    // }
+    
+    
     // const base_uri = 'http://localhost:1337/directions';
     // const qs = `origin_lat=${origin[0]}&origin_lng=${origin[1]}
     //             &dest_lat=${dest[0]}&dest_lng=${dest[1]}`;
@@ -220,6 +236,7 @@ class TripsBuilder {
     // response = await response.json();
     // return response;
   }
+
 
   formatRoute(route) {
     let timestamp = 0;

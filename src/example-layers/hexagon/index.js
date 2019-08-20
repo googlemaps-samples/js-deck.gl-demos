@@ -32,7 +32,7 @@ const active_businesses = `https://data.lacity.org/resource/6rrh-rzua.json?${que
 
 export class HexagonLayerExample {
   constructor() {}
-	static *getLayers() {
+	static async *getLayers() {
     return [
       new HexagonLayer({
         id: 'heatmap',

@@ -68,7 +68,7 @@ class App {
   }
 
   changeExample(example) {
-    let layers = example.getLayers(this.GoogleMapWithDeckGL);
+    const layers = example.getLayers(this.GoogleMapWithDeckGL);    
     const map_options = example.getMapOptions();    
     // short timeout so map load doesn't jank menu css transitions
     setTimeout(()=>{
@@ -80,10 +80,10 @@ class App {
 
   
   // Changes the Deck.gl layer applied to GoogleMapsOverlay
-  setLayer(layers) {        
+  async setLayer(layers) {    
     // Interrupt currently animated layer
     this.animation_frames.forEach(frame_id =>cancelAnimationFrame(frame_id));    
-    let next = layers.next();    
+    let next = await layers.next();    
     if (next.value){
       this.GoogleMapWithDeckGL.setLayer(next.value)
       if (!next.done){

@@ -25,7 +25,7 @@ const query = '?$limit=25000&$where=pickup_centroid_latitude%20is%20not%20null%2
 
 export class ArcLayerExample {
   constructor() {}
-	static *getLayers() {
+	static async *getLayers() {
     return [
       new IconLayer({
           id: 'icon-layer',
