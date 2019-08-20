@@ -43,12 +43,12 @@ export class TripsLayerExample {
   // }
 
   static async *getLayers(google_map) {        
-    let data = [];
-    const builder = new TripsBuilder(google_map);
-    let trips = builder.test(this.getMapOptions());        
+    const builder = new TripsBuilder(google_map);    
     let current_time = [];
     let i = 0;
     let j = 0;    
+
+    builder.getTrips(this.getMapOptions());
     // while (i<3){       
       
     //   data.push(next);
@@ -57,31 +57,30 @@ export class TripsLayerExample {
     //   i++;    
     // }        
     // console.log(data)
-    let next = await trips.next();    
-    while (!next.done){
-      data.push(next.value)
-      current_time.push(0);
-      console.log(data)
-      next = await trips.next();
-    }
+    
 
-console.log('ok')
-    let res = [];
-    setInterval(()=> {
-      data.forEach((chunk, index) => {
+    
+    while (i < 5000) {
+      let res = [];
+      // console.log(builder.chunks)
+      builder.chunks.forEach((chunk, index) => {      
         let layer = new TripsLayer({
           id: 'trips-layer-' + index,
-          data: chunk.value,          
-          getPath: d => d.route,        
+          data: chunk,          
+          getPath: d => d.route,  
+          getColor: d => d.mode === 'DRIVING' ? [239, 126, 35] : [85, 181, 238],      
           opacity: 0.6,
           widthMinPixels: 2,
           rounded: true,
           trailLength: 75,
-          currentTime: current_time[index]++
+          currentTime: builder.current_time[index]++
         })
+        res.push(layer);
       })
-      // yield res;
-    }, 1000)
+      i++
+      console.log(res)
+      yield res;      
+    }
   }
 
   static getMapOptions() {    
@@ -102,6 +101,18 @@ class TripsBuilder {
   constructor(google_map) {
     this.google_map = google_map;
     this.directions_service = new google_map.api.DirectionsService();
+    this.chunks = [];
+    this.current_time = [];
+  }
+
+  async getTrips(map_options) {
+    let trips = this.test(map_options);
+    let next = await trips.next();    
+    while (!next.done){
+      this.chunks.push(next.value);
+      this.current_time.push(0)
+      next = await trips.next();
+    }
   }
 
   async *test(map_options) {
@@ -120,20 +131,24 @@ class TripsBuilder {
           lat: places[j].geometry.location.lat(),
           lng: places[j].geometry.location.lng()
         };        
-        trips.push({origin: origin, dest: dest});
+        const mode = (Math.random() >= 0.5 ? 'DRIVING': 'WALKING');        
+        trips.push({origin: origin, dest: dest, mode: mode});
       }
     });
 
     while (trips.length > 0) {
       // console.log(trips.length)      
-      let chunk = trips.splice(0, 5);
-      chunk =  chunk.map(async(trip) => {
+      let chunk = trips.splice(0, 10);
+      console.log(chunk)
+      chunk = chunk.map(async(trip) => {
+        const mode = trip.mode;
         trip = await this.getDirections(trip); 
         const duration = trip.duration.value;        
         const route = trip.steps;
         trip = {
           duration: duration,
-          route: this.formatRoute(route)
+          route: this.formatRoute(route),
+          mode: mode
         }
         return trip
       });      
@@ -182,7 +197,7 @@ class TripsBuilder {
     const places_service = new this.google_map.api.places.PlacesService(this.google_map.map);
     const OPTIONS = {
       location: new this.google_map.api.LatLng(center),
-      radius: '2000',
+      radius: '3000',
       type: ['restaurant']
     };
     const places_request = new Promise((resolve, reject) => {
@@ -202,7 +217,7 @@ class TripsBuilder {
     const options = {
       origin: new this.google_map.api.LatLng(trip.origin.lat, trip.origin.lng),
       destination: new this.google_map.api.LatLng(trip.dest.lat, trip.dest.lng),
-      travelMode: 'DRIVING'
+      travelMode: trip.mode
     }    
     let directions = new Promise((resolve, reject) => {
       let directions_service = this.directions_service;
