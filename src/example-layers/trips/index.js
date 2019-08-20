@@ -21,18 +21,19 @@ import * as GoogleMapsClient from '@google/maps';
 export class TripsLayerExample {
   constructor() {}
   static async *getLayers(google_map) {        
-    const builder = new TripsBuilder(google_map, this.getMapOptions());    
+    const tripsBuilder = new TripsBuilder(google_map, this.getMapOptions());    
     let i = 0;
-    builder.genTrips();
+    tripsBuilder.genTrips();
     
     while (i < 5000) {
       let layers = [];
-      const chunks = builder.getChunks();
-      chunks.forEach((chunk, index) => {  
-        const current_time = builder.getCurrentTime(index);
+      const chunks = tripsBuilder.getChunks();
+      chunks.forEach((chunk, index) => {        
+        let current_time = tripsBuilder.getCurrentTime(index);
+        if (current_time > chunk.runtime) current_time = 0;
         const layer = new TripsLayer({
           id: 'trips-layer-' + index,
-          data: chunk,          
+          data: chunk.data,
           getPath: d => d.route,  
           getColor: d => d.mode === 'DRIVING' ? [239, 126, 35] : [16, 188, 219],      
           opacity: 0.7,
@@ -42,6 +43,8 @@ export class TripsLayerExample {
           currentTime: current_time
         })
         layers.push(layer);
+        current_time++;
+        tripsBuilder.setCurrentTime(index, current_time);
       })
       i++
       console.log(layers)
@@ -51,8 +54,8 @@ export class TripsLayerExample {
 
   static getMapOptions() {    
     return {
-      center: {lat: 37.791250, lng: -122.407463},
-      zoom: 15
+      center: {lat: 37.787732, lng: -122.403436},
+      zoom: 16
     }
   }
   static getMetadata() {
@@ -68,12 +71,13 @@ class TripsBuilder {
     this.google_map = google_map;
     this.map_options = map_options;
     this.directions_service = new google_map.api.DirectionsService();
+    this.places_service = new google_map.api.places.PlacesService(google_map.map);
     this.chunks = [];
     this.current_time = [];
   }
 
-  async genTrips(map_options) {
-    let trips = this.genTripsChunks(this.map_options);
+  async genTrips() {
+    let trips = this.genTripsChunk(this.map_options);
     let next = await trips.next();    
     while (!next.done){
       this.chunks.push(next.value);
@@ -82,14 +86,12 @@ class TripsBuilder {
     }
   }
 
-  async *genTripsChunks(map_options) {
-    
+  async *genTripsChunk() {    
     let places = await this.getPlaces();
-    let endpoints = this.getTripsEndpoints(places);
-    let trips = [];
-
+    let endpoints = this.getTripsEndpoints(places);    
     while (endpoints.length > 0) {
-      let chunk = endpoints.splice(0, 10);      
+      let chunk = endpoints.splice(0, 5);      
+      let chunk_runtime = 0;
       chunk = chunk.map(async(trip) => {
         const mode = trip.mode;
         trip = await this.getDirections(trip); 
@@ -100,9 +102,14 @@ class TripsBuilder {
           route: this.formatRoute(route),
           mode: mode
         }
+        if (duration > chunk_runtime) chunk_runtime = duration;
         return trip
       });      
-      chunk = await Promise.all(chunk);   
+      chunk = await Promise.all(chunk);
+      chunk = {
+        data: chunk,
+        runtime: chunk_runtime
+      }
       yield chunk;
     }
   }
@@ -110,10 +117,10 @@ class TripsBuilder {
   // Gets Places around the map center to use as trip endpoints
   async getPlaces() {    
     const center = this.map_options.center;
-    const places_service = new this.google_map.api.places.PlacesService(this.google_map.map);    
+    const places_service = this.places_service;    
     const options = {
       location: new this.google_map.api.LatLng(center),
-      radius: '3000',
+      radius: '2000',
       type: ['restaurant']
     };
     const places_request = new Promise((resolve, reject) => {
@@ -169,11 +176,16 @@ class TripsBuilder {
         endpoints.push({origin: origin, dest: dest, mode: mode});
       }
     });
+    endpoints = this.shuffleArr(endpoints);
     return endpoints;
   }
 
   getCurrentTime(index) {
-    return this.current_time[index]++;
+    return this.current_time[index];
+  }
+
+  setCurrentTime(index, timestamp) {
+    this.current_time[index] = timestamp;
   }
 
   getChunks() {
@@ -192,5 +204,15 @@ class TripsBuilder {
       return formatted_step;
     });              
     return route;
+  }
+
+  shuffleArr(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * arr.length);
+      const val = arr[i];
+      arr[i] = arr[j];
+      arr[j] = val;
+    }
+    return arr;
   }
 }
