@@ -62,17 +62,16 @@ export class TripsLayerExample {
     
     while (i < 5000) {
       let res = [];
-      // console.log(builder.chunks)
       builder.chunks.forEach((chunk, index) => {      
         let layer = new TripsLayer({
           id: 'trips-layer-' + index,
           data: chunk,          
           getPath: d => d.route,  
-          getColor: d => d.mode === 'DRIVING' ? [239, 126, 35] : [85, 181, 238],      
-          opacity: 0.6,
+          getColor: d => d.mode === 'DRIVING' ? [239, 126, 35] : [16, 188, 219],      
+          opacity: 0.7,
           widthMinPixels: 2,
           rounded: true,
-          trailLength: 75,
+          trailLength: 100,
           currentTime: builder.current_time[index]++
         })
         res.push(layer);
@@ -86,7 +85,7 @@ export class TripsLayerExample {
   static getMapOptions() {    
     return {
       center: {lat: 37.791250, lng: -122.407463},
-      zoom: 16
+      zoom: 15
     }
   }
   static getMetadata() {
@@ -116,30 +115,13 @@ class TripsBuilder {
   }
 
   async *test(map_options) {
-    let trips = [];
-    let chunk = [];
+    
     let places = await this.getPlaces(map_options.center);
-   
-    // Build the set of trips and get directions between endpoints 
-    places.forEach(async (place, index) => {
-      const origin = {
-        lat: place.geometry.location.lat(),
-        lng: place.geometry.location.lng()
-      };
-      for (let j = index + 1; j < places.length; j++) {
-        const dest = {
-          lat: places[j].geometry.location.lat(),
-          lng: places[j].geometry.location.lng()
-        };        
-        const mode = (Math.random() >= 0.5 ? 'DRIVING': 'WALKING');        
-        trips.push({origin: origin, dest: dest, mode: mode});
-      }
-    });
+    let endpoints = this.genTripsEndpoints(places);
+    let trips = [];
 
-    while (trips.length > 0) {
-      // console.log(trips.length)      
-      let chunk = trips.splice(0, 10);
-      console.log(chunk)
+    while (endpoints.length > 0) {
+      let chunk = endpoints.splice(0, 10);      
       chunk = chunk.map(async(trip) => {
         const mode = trip.mode;
         trip = await this.getDirections(trip); 
@@ -152,19 +134,30 @@ class TripsBuilder {
         }
         return trip
       });      
-      chunk = await Promise.all(chunk);
-
-      // console.log(chunk)      
+      chunk = await Promise.all(chunk);   
       yield chunk;
     }
-
-    // while (trips.length > 0) {      
-    //   let chunk = await Promise.all(trips.splice(0, 5));
-    //   console.log(chunk)
-    //   yield chunk;
-    // }
   }
 
+  genTripsEndpoints (places) {
+    let endpoints = [];
+    // Build the set of trips and get directions between endpoints 
+    places.forEach(async (place, index) => {      
+      const origin = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      };
+      for (let j = index + 1; j < places.length; j++) {
+        const dest = {
+          lat: places[j].geometry.location.lat(),
+          lng: places[j].geometry.location.lng()
+        };        
+        const mode = (Math.random() >= 0.5 ? 'DRIVING': 'WALKING');        
+        endpoints.push({origin: origin, dest: dest, mode: mode});
+      }
+    });
+    return endpoints;
+  }
 
 
   // Builds trips using Places Library for endpoints and Directions Service for segments
