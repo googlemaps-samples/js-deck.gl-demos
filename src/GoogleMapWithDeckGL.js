@@ -15,13 +15,12 @@
  */
  
 // Set your API key in src/googleMapsAPIKey or GoogleMapsAPIKey env var
-import * as google_maps_api_key from './GoogleMapsAPIKey';
 import {map_styles} from './map_styles';
 import {GoogleMapsOverlay} from '@deck.gl/google-maps';
 
 // Initializes Google Maps JS API, draws base map and adds Deck.gl overlay
 export class GoogleMapWithDeckGL {
-  constructor() {    
+  constructor(google_maps_api_key) {        
     this.google_maps_api_key = google_maps_api_key;
     this.api;
     this.map;

@@ -18,7 +18,7 @@ To run it on localhost, do the following:
 
 1. Download the repo.
 
-2. Set your API key either in a `GoogleMapsAPIKey` environment variable, or in `/src/GoogleMapsAPIKey.js`.
+2. Set your API key in a `GoogleMapsAPIKey` environment variable or at the top of `app.js` in the `GOOGLE_MAPS_API_KEY` constant.
 
 3. Run `npm install` to download dependencies.
 
@@ -29,6 +29,8 @@ Your browser will open to `http://localhost:8080`.
 ### The demo won't run!
 
 Make sure that your API key is valid and doesn't have any restrictions that would prevent it making calls to the Maps JS API, Directions API, or Places API on localhost.
+
+Also, the URIs for some of the city open data sources sometimes change. We try to keep them updated but if you find them out of date a quick search of one of the datasources below can get you an updated URI to plug into the demo.
 
 ## Project structure
 
@@ -49,3 +51,18 @@ Primarily what you'll want to look at is `/example-layers` and `GoogleMapsWithDe
 - [`GoogleMapsOverlay` deck.gl submodule docs](https://deck.gl/#/documentation/submodule-api-reference/deckgl-google-maps/overview)
 - [deck.gl docs](https://deck.gl/#/documentation/overview/introduction)
 - [Places library in the Maps JS API docs]()
+
+## Datasources
+
+This demo uses a mix of open data from different cities, and Google Maps Platform APIs
+
+### Open Data
+
+- [Chicago Data Portal](https://data.cityofchicago.org/)
+- [Los Angeles Open Data](https://data.lacity.org/)
+- [NYC Open Data](https://data.cityofnewyork.us/)
+
+### Google Maps Platform
+
+- [Maps JS API directions service](https://developers.google.com/maps/documentation/javascript/directions)
+- [Maps JS API Places library](https://developers.google.com/maps/documentation/javascript/places)

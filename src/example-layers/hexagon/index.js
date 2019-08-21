@@ -16,11 +16,15 @@
 
 import {HexagonLayer} from '@deck.gl/aggregation-layers';
 
+/*
+ * Demo of Hexagon Layer that aggregates Los Angeles active business data
+ *
+ * Datasource: Los Angeles Open Data
+ * https://data.lacity.org/A-Prosperous-City/Listing-of-Active-Businesses/6rrh-rzua
+ */
 export class HexagonLayerExample {
   constructor() {}
-	static async *getLayers() {
-    // datasource: Los Angeles Open Data
-    // https://data.lacity.org/A-Prosperous-City/Listing-of-Active-Businesses/6rrh-rzua
+	static async *getLayers() {    
     const data_uri = `https://data.lacity.org/resource/6rrh-rzua.json`,
           qs = '?$limit=150000&$WHERE=location_1 IS NOT NULL';
 

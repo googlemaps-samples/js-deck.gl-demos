@@ -17,10 +17,15 @@
 import {examples} from './example-layers';
 import {GoogleMapWithDeckGL} from './GoogleMapWithDeckGL';
 
+/*
+ * SET YOUR API KEY HERE OR IN A GoogleMapsAPIKey ENV VAR
+ */
+const GOOGLE_MAPS_API_KEY = '';
+
 // Builds the demo UI
 class App {
   constructor() {
-    this.GoogleMapWithDeckGL = new GoogleMapWithDeckGL();
+    this.GoogleMapWithDeckGL = new GoogleMapWithDeckGL(GOOGLE_MAPS_API_KEY);
     this.animation_frames = [];
     this.init();
     this.selected_button;

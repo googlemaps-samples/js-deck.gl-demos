@@ -16,11 +16,17 @@
  
 import {ScatterplotLayer} from '@deck.gl/layers';
 
+/*
+ * Demo of ScatterplotLayer that renders composite 
+ * layers of Manhattan street tree and parking meter geocodes
+ *
+ * Datasource: NYC Open Data 
+ * https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/pi5s-9p35
+ * https://data.cityofnewyork.us/Transportation/Parking-Meters-GPS-Coordinates-and-Status/5jsj-cq4s
+ */
 export class ScatterplotLayerExample {
   constructor() {}
-  static async *getLayers() {
-    // datasource: NYC Open Data https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/pi5s-9p35
-    // datasource: NYC Open Data https://data.cityofnewyork.us/Transportation/Parking-Meters-GPS-Coordinates-and-Status/5jsj-cq4s
+  static async *getLayers() {    
     const data_uri = {
       trees: 'https://data.cityofnewyork.us/resource/5rq2-4hqu.json',
       parking_meters: 'https://data.cityofnewyork.us/resource/xx9u-e8wf.json'

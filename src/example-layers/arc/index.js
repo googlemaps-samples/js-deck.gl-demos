@@ -16,10 +16,16 @@
 
 import {ArcLayer} from '@deck.gl/layers';
 
+/*
+ * Demo of ArcLayer that renders Chicago taxi trips 
+ * between neighborhood centroid origin and destination points
+ *
+ * Datasource: Chicago Data Portal
+ * https://data.cityofchicago.org/Transportation/Taxi-Trips/wrvz-psew
+ */
 export class ArcLayerExample {
   constructor() {}
-	static async *getLayers() {  
-    // source: Chicago Data Portal https://data.cityofchicago.org/Transportation/Taxi-Trips/wrvz-psew
+	static async *getLayers() {   
     const data_uri = 'https://data.cityofchicago.org/resource/wrvz-psew.json',
           qs = '?$LIMIT=25000&$WHERE=pickup_centroid_latitude IS NOT NULL AND dropoff_centroid_latitude IS NOT NULL';
     
