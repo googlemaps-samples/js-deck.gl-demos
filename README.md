@@ -2,7 +2,7 @@
 
 This example app shows how you can use the Maps Javascript API with the [Deck.gl](https://deck.gl) OSS framework to render high-quality 3D data visualizations on top of Google Maps.
 
-<p align="center"><img src="https://github.com/googlemaps/deckgl-demos/tree/master/img/screenshot.png" /></p>
+<p align="center"><img src="https://github.com/googlemaps/deckgl-demos/tree/master/src/img/screenshot.png" /></p>
 
 ## What is deck.gl?
 
