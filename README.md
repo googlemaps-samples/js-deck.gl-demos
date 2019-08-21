@@ -50,7 +50,6 @@ Primarily what you'll want to look at is `/example-layers` and `GoogleMapsWithDe
 - [Google Maps JS API docs](https://developers.google.com/maps/documentation/javascript/)
 - [`GoogleMapsOverlay` deck.gl submodule docs](https://deck.gl/#/documentation/submodule-api-reference/deckgl-google-maps/overview)
 - [deck.gl docs](https://deck.gl/#/documentation/overview/introduction)
-- [Places library in the Maps JS API docs]()
 
 ## Datasources
 
