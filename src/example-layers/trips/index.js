@@ -21,13 +21,15 @@ import * as GoogleMapsClient from '@google/maps';
 export class TripsLayerExample {
   constructor() {}
   static async *getLayers(google_map) {        
+    // start generating trips from Places API & Directions API
     const tripsBuilder = new TripsBuilder(google_map, this.getMapOptions());    
-    let i = 0;
-    tripsBuilder.genTrips();
+    let render_count = 0; // number of times to iterate and render layers
     
-    while (i < 5000) {
-      let layers = [];
+    while (render_count < 5000) {      
+      // check if a new chunk is available to render new layer
       const chunks = tripsBuilder.getChunks();
+      let layers = [];
+
       chunks.forEach((chunk, index) => {        
         let current_time = tripsBuilder.getCurrentTime(index);
         if (current_time > chunk.runtime) current_time = 0;
@@ -45,9 +47,9 @@ export class TripsLayerExample {
         layers.push(layer);
         current_time++;
         tripsBuilder.setCurrentTime(index, current_time);
-      })
-      i++
-      console.log(layers)
+      });
+      
+      render_count++;
       yield layers;      
     }
   }
@@ -74,6 +76,7 @@ class TripsBuilder {
     this.places_service = new google_map.api.places.PlacesService(google_map.map);
     this.chunks = [];
     this.current_time = [];
+    this.genTrips();
   }
 
   async genTrips() {
@@ -86,9 +89,13 @@ class TripsBuilder {
     }
   }
 
+  // Generates the trips in chunks so we don't 
+  // have to wait for all calls to complete
   async *genTripsChunk() {    
-    let places = await this.getPlaces();
-    let endpoints = this.getTripsEndpoints(places);    
+    const places = await this.getPlaces();
+    const endpoints = this.getTripsEndpoints(places);    
+    
+    // generate the trips in sets of 5
     while (endpoints.length > 0) {
       let chunk = endpoints.splice(0, 5);      
       let chunk_runtime = 0;
@@ -102,6 +109,7 @@ class TripsBuilder {
           route: this.formatRoute(route),
           mode: mode
         }
+        // Set the total layer runtime to equal longest trip in set
         if (duration > chunk_runtime) chunk_runtime = duration;
         return trip
       });      
@@ -142,9 +150,9 @@ class TripsBuilder {
       destination: new this.google_map.api.LatLng(trip.dest.lat, trip.dest.lng),
       travelMode: trip.mode
     }    
-    let directions = new Promise((resolve, reject) => {
-      let directions_service = this.directions_service;
-      let id = setInterval(() => {
+    const directions = new Promise((resolve, reject) => {
+      const directions_service = this.directions_service;
+      const id = setInterval(() => {
         directions_service.route(options, function x(response, status){
           if (status === 'OK') {      
             clearInterval(id);                     
@@ -176,10 +184,12 @@ class TripsBuilder {
         endpoints.push({origin: origin, dest: dest, mode: mode});
       }
     });
+    // shuffle the array so trips render randomly around the map
     endpoints = this.shuffleArr(endpoints);
     return endpoints;
   }
 
+  /* accessors/mutators */
   getCurrentTime(index) {
     return this.current_time[index];
   }
@@ -192,6 +202,7 @@ class TripsBuilder {
     return this.chunks;
   } 
 
+  /* utils */
   formatRoute(route) {
     let timestamp = 0;
     route = route.map(step => {

@@ -16,48 +16,51 @@
  
 import {ScatterplotLayer} from '@deck.gl/layers';
 
-// NOTE: THESE DATA URLs MAY PERIODICALLY CHANGE
-
-// source: NYC Open Data https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/pi5s-9p35
-const TREES =
-  'https://data.cityofnewyork.us/resource/5rq2-4hqu.json?$limit=65000&&boroname=Manhattan';
-
-// source: NYC Open Data https://data.cityofnewyork.us/Transportation/Parking-Meters-GPS-Coordinates-and-Status/5jsj-cq4s
-const METERS = 'https://data.cityofnewyork.us/resource/xx9u-e8wf.json?$limit=15000';
-
 export class ScatterplotLayerExample {
   constructor() {}
   static async *getLayers() {
-    return [
+    // datasource: NYC Open Data https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/pi5s-9p35
+    // datasource: NYC Open Data https://data.cityofnewyork.us/Transportation/Parking-Meters-GPS-Coordinates-and-Status/5jsj-cq4s
+    const data_uri = {
+      trees: 'https://data.cityofnewyork.us/resource/5rq2-4hqu.json',
+      parking_meters: 'https://data.cityofnewyork.us/resource/xx9u-e8wf.json'
+    };
+    const qs = {
+      trees: '?$limit=65000&&boroname=Manhattan',
+      parking_meters: '?$limit=15000'
+    };
+    const layers = [
       new ScatterplotLayer({
         id: 'scatterplot-tree-layer',
-        data: TREES,
+        data: data_uri.trees + qs.trees,
+        getPosition: d => d.the_geom.coordinates,
+        getFillColor: d => [51, 255, 60],
+        getLineColor: d => [0, 0, 0],
         opacity: 0.8,
         stroked: true,
         filled: true,
         radiusScale: 6,
         radiusMinPixels: 1,
         radiusMaxPixels: 100,
-        lineWidthMinPixels: 1,
-        getPosition: d => d.the_geom.coordinates,
-        getFillColor: d => [51, 255, 60],
-        getLineColor: d => [0, 0, 0]      
+        lineWidthMinPixels: 1      
       }),
       new ScatterplotLayer({
         id: 'scatterplot-meter-layer',
-        data: METERS,
+        data: data_uri.parking_meters + qs.parking_meters,
+        getPosition: d => d.the_geom.coordinates,
+        getFillColor: d=> [255, 51, 224],
+        getLineColor: d => [0, 0, 0],
         opacity: 0.8,
         stroked: true,
         filled: true,
         radiusScale: 6,
         radiusMinPixels: 1,
         radiusMaxPixels: 100,
-        lineWidthMinPixels: 1,
-        getPosition: d => d.the_geom.coordinates,
-        getFillColor: d => [255, 51, 224],
-        getLineColor: d => [0, 0, 0]      
+        lineWidthMinPixels: 1,        
       })
-    ]
+    ];
+
+    return layers;
   }
   static getMapOptions() {
     return {

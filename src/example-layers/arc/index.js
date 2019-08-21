@@ -16,27 +16,26 @@
 
 import {ArcLayer} from '@deck.gl/layers';
 
-// source: Chicago Data Portal https://data.cityofchicago.org/Transportation/Taxi-Trips/wrvz-psew
-const TAXI_RIDES =
-  'https://data.cityofchicago.org/resource/wrvz-psew.json?$limit=20000';
-
-// Remove incomplete datapoints from the result set
-const query = '?$limit=25000&$where=pickup_centroid_latitude%20is%20not%20null%20AND%20dropoff_centroid_latitude%20is%20not%20null';
-
 export class ArcLayerExample {
   constructor() {}
 	static async *getLayers() {  
-    return [
+    // source: Chicago Data Portal https://data.cityofchicago.org/Transportation/Taxi-Trips/wrvz-psew
+    const data_uri = 'https://data.cityofchicago.org/resource/wrvz-psew.json',
+          qs = '?$LIMIT=25000&$WHERE=pickup_centroid_latitude IS NOT NULL AND dropoff_centroid_latitude IS NOT NULL';
+    
+    const layers = [
       new ArcLayer({
         id: 'arcs',
-        data: 'https://data.cityofchicago.org/resource/wrvz-psew.json' + query,
+        data: data_uri + qs,
         getSourcePosition: f => [f.pickup_centroid_longitude, f.pickup_centroid_latitude],
         getTargetPosition: f => [f.dropoff_centroid_longitude, f.dropoff_centroid_latitude],
         getSourceColor: [0, 128, 200],
         getTargetColor: [255, 101, 101],
         getWidth: 0.5
     	})
-    ]
+    ];
+
+    return layers;
   }
   static getMapOptions() {
     return {

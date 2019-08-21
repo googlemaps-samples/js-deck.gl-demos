@@ -16,39 +16,39 @@
 
 import {HexagonLayer} from '@deck.gl/aggregation-layers';
 
-const COLOR_RANGE = [   
-  [196, 255, 255],
-  [116, 255, 255],
-  [72, 189, 150],  
-  [0, 171, 152],
-  [63, 141, 90],  
-  [47, 142, 34]
-];
-
-// source: Los Angeles Open Data
-// https://data.lacity.org/A-Prosperous-City/Listing-of-Active-Businesses/6rrh-rzua
-const query = '$limit=150000&$WHERE=location_1 IS NOT NULL';
-const active_businesses = `https://data.lacity.org/resource/6rrh-rzua.json?${query}`;
-
 export class HexagonLayerExample {
   constructor() {}
 	static async *getLayers() {
-    return [
+    // datasource: Los Angeles Open Data
+    // https://data.lacity.org/A-Prosperous-City/Listing-of-Active-Businesses/6rrh-rzua
+    const data_uri = `https://data.lacity.org/resource/6rrh-rzua.json`,
+          qs = '?$limit=150000&$WHERE=location_1 IS NOT NULL';
+
+    const layers = [
       new HexagonLayer({
         id: 'heatmap',
+        data: data_uri + qs,
         colorDomain: [0,50],
-        colorRange: COLOR_RANGE,
-        data: active_businesses,
+        getPosition: d => [+d.location_1.longitude, +d.location_1.latitude],
+        colorRange: [   
+          [196, 255, 255],
+          [116, 255, 255],
+          [72, 189, 150],  
+          [0, 171, 152],
+          [63, 141, 90],  
+          [47, 142, 34]
+        ],        
         elevationRange: [0, 300],
         elevationScale: 250,
         extruded: true,
-        radius: 100,
-        getPosition: d => [+d.location_1.longitude, +d.location_1.latitude],
+        radius: 100,        
         opacity: 0.2,        
         upperPercentile: 50,
         coverage: 0.8
       })
-    ]
+    ];
+
+    return layers;
   }
   static getMapOptions() {
     return {
