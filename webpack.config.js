@@ -20,14 +20,14 @@ const path = require('path');
 const CONFIG = {
   mode: 'development',
   entry: {
-  	app: './src/app.js',    
+  	app: './src/app.js'
   },
   devServer: {
-    contentBase: [path.join(__dirname, 'src'), path.join(__dirname, 'img')]
+    contentBase: path.join(__dirname, 'src')
   },  
   plugins: [
     // Read google maps token from environment variable
     new webpack.EnvironmentPlugin(['GoogleMapsAPIKey'])
-  ],
+  ]  
 };
 module.exports = CONFIG;

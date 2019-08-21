@@ -24,21 +24,23 @@ To run it on localhost, do the following:
 
 4. Run `npm start`.
 
-5. Open `localhost:1337` in your browser.
+Your browser will open to `http://localhost:8080`.
+
+### The demo won't run!
+
+Make sure that your API key is valid and doesn't have any restrictions that would prevent it making calls to the Maps JS API, Directions API, or Places API on localhost.
 
 ## Project structure
 
 There are three main pieces to this project, all located in `/src`:
 
-- The `/layers` directory is where all the different layer types and their accompanying logic are defined. Each layer is handled in the correspondingly named directory.
+- The `/example-layers` directory is where all the different layer types and their accompanying logic are defined. Each layer is handled in the correspondingly named directory.
 
 - `GoogleMapsWithDeckGL.js` is where the logic for instantiating the Google base map and applying the deck.gl overlay to it happens.
 
 - `app.js` supplies the logic for the UI of the example app.
 
-- `server.js` serves the example app and provides calls to the [Directions API](https://developers.google.com/maps/documentation/directions/), which is used in the `TripsLayer` example.
-
-Primarily what you'll want to look at is `/layers` and `GoogleMapsWithDeckGL`, which are the pieces that show how deck.gl support works with the Maps JS API.
+Primarily what you'll want to look at is `/example-layers` and `GoogleMapsWithDeckGL`, which are the pieces that show how deck.gl support works with the Maps JS API.
 
 ## Documentation & Resources
 
