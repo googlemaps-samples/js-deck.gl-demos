@@ -2,7 +2,7 @@
 
 This example app shows how use the [Deck.gl](https://deck.gl) Trips Layer data visualization on Google Maps. The Trips Layer ingests a set of geocodes that represent steps in a trip, such as a car in motion. Each geocode is associated with a timestamp. deck.gl animates the travel between geocodes to visualize the trip in motion over time.
 
-<p align="center"><img src="https://github.com/googlemaps/deck.gl-demos/raw/master/DemoApp/src/img/screenshot.png" /></p>
+<p align="center"><img src="https://github.com/googlemaps/deck.gl-demos/raw/master/img/trips.png" /></p>
 
 ## Running the app
 

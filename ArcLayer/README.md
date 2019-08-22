@@ -2,7 +2,7 @@
 
 This example app shows how use the [Deck.gl](https://deck.gl) Arc Layer data visualization on Google Maps. The Arc Layer takes a set of origin and destination points as geocodes, and renders the path between them as three-dimensional arcs.
 
-<p align="center"><img src="https://github.com/googlemaps/deck.gl-demos/raw/master/DemoApp/src/img/screenshot.png" /></p>
+<p align="center"><img src="https://github.com/googlemaps/deck.gl-demos/raw/master/img/arc.png" /></p>
 
 ## Running the app
 

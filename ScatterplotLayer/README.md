@@ -2,7 +2,7 @@
 
 This example app shows how use the [Deck.gl](https://deck.gl) Scatterplot Layer data visualization on Google Maps. The Scatterplot Layer ingests a set of geocodes and renders them as a scatterplot of dots on the map. This demo renders two datasets as separate Scatterplot Layers to create a composite visualization.
 
-<p align="center"><img src="https://github.com/googlemaps/deck.gl-demos/raw/master/DemoApp/src/img/screenshot.png" /></p>
+<p align="center"><img src="https://github.com/googlemaps/deck.gl-demos/raw/master/img/scatterplot.png" /></p>
 
 ## Running the app
 

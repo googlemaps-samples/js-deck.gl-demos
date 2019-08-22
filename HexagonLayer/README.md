@@ -2,7 +2,7 @@
 
 This example app shows how use the [Deck.gl](https://deck.gl) Hexagon Layer data visualization on Google Maps. The Hexagon Layer ingests a set of geocodes and aggregates them into hexagon-shaped areas. The hexagons are then rendered with height on the z-axis based on the number of data points each contains.
 
-<p align="center"><img src="https://github.com/googlemaps/deck.gl-demos/raw/master/DemoApp/src/img/screenshot.png" /></p>
+<p align="center"><img src="https://github.com/googlemaps/deck.gl-demos/raw/master/img/hexagon.png" /></p>
 
 ## Running the app
 
