@@ -43,7 +43,7 @@ export class TripsLayerExample {
           rounded: true,
           trailLength: 100,
           currentTime: current_time
-        })
+        });
         layers.push(layer);
         current_time++;
         tripsBuilder.setCurrentTime(index, current_time);
@@ -84,7 +84,7 @@ class TripsBuilder {
     let next = await trips.next();    
     while (!next.done){
       this.chunks.push(next.value);
-      this.current_time.push(0)
+      this.current_time.push(0);
       next = await trips.next();
     }
   }
@@ -153,15 +153,13 @@ class TripsBuilder {
     const directions = new Promise((resolve, reject) => {
       const directions_service = this.directions_service;
       const id = setInterval(() => {
-        directions_service.route(options, function x(response, status){
+        directions_service.route(options, (response, status) => {
           if (status === 'OK') {      
             clearInterval(id);                     
             resolve(response.routes[0].legs[0]);
-          }          
+          }
         });        
-      }, 1000)
-      
-    
+      }, 1000);      
     });
     return directions;
   }

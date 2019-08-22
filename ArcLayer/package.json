@@ -9,9 +9,9 @@
     "bundle": "webpack --config webpack.config.js"
   },
   "dependencies": {
-    "@deck.gl/core": "^7.0.0-beta",
-    "@deck.gl/google-maps": "^7.0.0-beta",
-    "@deck.gl/layers": "^7.0.0-beta",
+    "@deck.gl/core": "7.0.0",
+    "@deck.gl/google-maps": "7.0.0",
+    "@deck.gl/layers": "7.0.0",
     "webpack-cli": "^3.1.2",
     "webpack": "^4.20.2"
   },

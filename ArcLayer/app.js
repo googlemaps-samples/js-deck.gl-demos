@@ -1,6 +1,6 @@
 import {map_styles} from './map_styles';
 import {GoogleMapsOverlay} from '@deck.gl/google-maps';
-import {GeoJsonLayer, ArcLayer} from '@deck.gl/layers';
+import {ArcLayer} from '@deck.gl/layers';
 
 /* SET YOU APIR KEY HERE OR IN GoogleMapsAPIKey ENV VAR */
 const YOUR_API_KEY = '';

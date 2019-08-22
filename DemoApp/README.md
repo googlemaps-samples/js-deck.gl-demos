@@ -4,12 +4,6 @@ This example app shows how you can use the Maps Javascript API with the [Deck.gl
 
 <p align="center"><img src="https://github.com/amuramoto/deck.gl-demos-1/raw/master/src/img/screenshot.png" /></p>
 
-## What is deck.gl?
-
-deck.gl uses a layer-based approach to render WebGL-accelerated data visualizations on top of the Google Maps base map. [Custom overlay](https://developers.google.com/maps/documentation/javascript/customoverlays) support in the Maps JS API is used to sync the layers movement of the underlying map, including panning and zooming.
-
-To learn more about how the deck.gl and Google Maps Platform teams worked together to add support for deck.gl to the Maps JS API base map, check out this post on the [vis.gl blog](https://medium.com/vis-gl/using-deck-gl-with-google-maps-9c868d18e3cd).
-
 ## Running the demo
 
 To see the demo running live, go to https://goo.gle/deckgl-demos. Please be patient while the data loads for each layers. In some cases, hundreds of thousands of data points are being fetched over http.

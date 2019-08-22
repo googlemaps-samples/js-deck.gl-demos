@@ -87,8 +87,8 @@ class App {
   // Changes the Deck.gl layer applied to GoogleMapsOverlay
   async setLayer(layers) {    
     // Interrupt currently animated layer
-    this.animation_frames.forEach(frame_id =>cancelAnimationFrame(frame_id));    
-    let next = await layers.next();    
+    this.animation_frames.forEach(frame_id => cancelAnimationFrame(frame_id));
+    let next = await layers.next();
     if (next.value){
       this.GoogleMapWithDeckGL.setLayer(next.value)
       if (!next.done){
