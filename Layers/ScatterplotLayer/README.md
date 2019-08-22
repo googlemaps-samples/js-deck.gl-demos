@@ -10,7 +10,7 @@ To run the app on localhost, do the following:
 
 1. Download or clone the repo.
 
-2. Set your API key in a `GoogleMapsAPIKey` environment variable or at the top of `src/app.js` in the `YOUR_API_KEY` constant.
+2. Set your [API key](https://developers.google.com/maps/documentation/javascript/get-api-key) in a `GoogleMapsAPIKey` environment variable or at the top of `src/app.js` in the `YOUR_API_KEY` constant.
 
 3. Run `npm install` to download dependencies.
 
