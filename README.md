@@ -4,7 +4,7 @@ This repo contains example apps that show how to use the [Google Maps Platform J
 
 If this is your first time looking at these examples, start with the [Demo App](https://github.com/googlemaps/deck.gl-demos/tree/master/DemoApp), which shows all of the different layers we currently have examples for in a single UI. This repo also has simplified standalone examples for each layer individually, which are less complex and easier to parse than the Demo App.
 
-<p align="center"><img src="https://github.com/googlemaps/deck.gl-demos/raw/master/DemoApp/src/img/screenshot.png" /></p>
+<p align="center"><img src="https://github.com/googlemaps/deck.gl-demos/raw/master/img/demoapp.png" /></p>
 
 ## What is deck.gl?
 
