@@ -4,9 +4,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "start": "webpack-dev-server --progress --hot --open",
-    "prestart": "npm run bundle",
-    "bundle": "webpack --config webpack.config.js"
+    "start": "webpack-dev-server --progress --hot --open"
   },
   "dependencies": {
     "@deck.gl/core": "7.0.0",
