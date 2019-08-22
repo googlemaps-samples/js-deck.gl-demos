@@ -38,7 +38,7 @@ There are three main pieces to this project, all located in `/src`:
 
 Primarily what you'll want to look at is `/example-layers` and `GoogleMapsWithDeckGL`, which are the pieces that show how deck.gl support works with the Maps JS API.
 
-## Documentation & Resources
+## Documentation & resources
 
 - [This example app running live](https://goo.gle/deckgl-demos)
 - [Google Maps JS API docs](https://developers.google.com/maps/documentation/javascript/)
@@ -49,7 +49,7 @@ Primarily what you'll want to look at is `/example-layers` and `GoogleMapsWithDe
 
 This demo uses a mix of open data from different cities, and Google Maps Platform APIs
 
-### Open Data
+### Open data
 
 - [Chicago Data Portal](https://data.cityofchicago.org/)
 - [Los Angeles Open Data](https://data.lacity.org/)

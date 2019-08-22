@@ -16,7 +16,7 @@ To learn more about how the deck.gl and Google Maps Platform teams worked togeth
 
 All of the apps are built to be served locally using [webpack devserver](https://webpack.js.org/configuration/dev-server/). For instructions on running one of the apps, see its README file.
 
-## Documentation & Resources
+## Documentation & resources
 
 - [Google Maps JS API docs](https://developers.google.com/maps/documentation/javascript/)
 - [`GoogleMapsOverlay` deck.gl submodule docs](https://deck.gl/#/documentation/submodule-api-reference/deckgl-google-maps/overview)

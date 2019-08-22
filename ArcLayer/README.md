@@ -4,9 +4,9 @@ This example app shows how use the [Deck.gl](https://deck.gl) Arc Layer data vis
 
 <p align="center"><img src="https://github.com/googlemaps/deck.gl-demos/raw/master/DemoApp/src/img/screenshot.png" /></p>
 
-## Running the demo
+## Running the app
 
-To run the demo on localhost, do the following:
+To run the app on localhost, do the following:
 
 1. Download or clone the repo.
 
@@ -18,13 +18,13 @@ To run the demo on localhost, do the following:
 
 Your browser will open to `http://localhost:8080`.
 
-### The demo won't run!
+### The app won't run!
 
 Make sure that your API key is valid and doesn't have any restrictions that would prevent it making calls to the Maps JS API, Directions API, or Places API on localhost.
 
-Also, the URIs for some of the city open data sources sometimes change. We try to keep them updated but if you find them out of date a quick search of one of the datasources below can get you an updated URI to plug into the demo.
+Also, the URIs for some of the city open data sources sometimes change. We try to keep them updated but if you find them out of date a quick search of one of the datasources below can get you an updated URI to plug into the app.
 
-## Documentation & Resources
+## Documentation & resources
 
 - [Google Maps JS API docs](https://developers.google.com/maps/documentation/javascript/)
 - [`GoogleMapsOverlay` deck.gl submodule docs](https://deck.gl/#/documentation/submodule-api-reference/deckgl-google-maps/overview)
