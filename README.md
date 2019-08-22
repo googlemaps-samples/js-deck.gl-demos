@@ -2,7 +2,7 @@
 
 This repo contains example apps that show how to use the [Google Maps Platform JS API](https://developers.google.com/maps/documentation/javascript/) with the [deck.gl](http://deck.gl) data visualization framework.
 
-If this is your first time looking at these examples, start with the [Demo App](https://github.com/googlemaps/deck.gl-demos/tree/master/DemoApp), which shows all of the different layers we currently have examples for in a single UI. This repo also has simplified standalone examples for each layer individually, which are less complex and easier to parse than the Demo App.
+If this is your first time looking at these examples, start with the [Example App](https://github.com/googlemaps/deck.gl-demos/tree/master/ExampleApp), which shows all of the different layers we currently have examples for in a single UI. This repo also has simplified standalone examples for each layer individually in [`/Layers`](https://github.com/googlemaps/deck.gl-demos/tree/master/Layers)	, which are less complex and easier to parse than the Demo App.
 
 <p align="center"><img src="https://github.com/googlemaps/deck.gl-demos/raw/master/img/demoapp.png" /></p>
 
