@@ -23,7 +23,7 @@
     "@deck.gl/geo-layers": "7.0.0",
     "@deck.gl/google-maps": "7.0.0",
     "@deck.gl/layers": "7.0.0",
-    "@google/maps": "^0.5.5",
+    "@google/maps": "^1.1.0",
     "express": "^4.17.1",
     "webpack-cli": "^3.1.2",
     "webpack": "^4.20.2"
