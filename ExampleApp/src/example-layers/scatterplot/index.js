@@ -29,7 +29,7 @@ export class ScatterplotLayerExample {
   static async *getLayers() {    
     const data_uri = {
       trees: 'https://data.cityofnewyork.us/resource/5rq2-4hqu.json',
-      parking_meters: 'https://data.cityofnewyork.us/resource/xx9u-e8wf.json'
+      parking_meters: 'https://data.cityofnewyork.us/resource/wgp3-nai4.json'
     };
     const qs = {
       trees: '?$limit=65000&&boroname=Manhattan',
